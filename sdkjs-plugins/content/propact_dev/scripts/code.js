@@ -38,8 +38,8 @@
             flagInit = true;
         }
 
-        var sDocumentEditingRestrictions = "readOnly";
-        window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+        // var sDocumentEditingRestrictions = "readOnly";
+        // window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
 
         // Plugin Code - Start CM //
         var displayNoneClass = "d-none";
@@ -237,6 +237,8 @@
                             document.getElementById('userProfilerole').textContent = responseData.data.loggedInUserDetails.role;
                             document.getElementById('organizationName').textContent = responseData.data.oppositeUser.company.companyName;
                             document.getElementById('counterpartyName').textContent = responseData.data.oppositeUser.firstName + " " + responseData.data.oppositeUser.lastName;
+                            var sDocumentEditingRestrictions = "readOnly";
+                            window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
                             getContractTeamAndUserList();
                             getContractSectionList();
                         } else if ((responseData.data.openContractDetails && responseData.data.openContractDetails.counterPartyInviteStatus && responseData.data.openContractDetails.counterPartyInviteStatus == 'Pending') || responseData.data.counterPartyInviteStatus == 'Pending') {
