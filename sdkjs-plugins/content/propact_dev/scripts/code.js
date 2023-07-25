@@ -503,6 +503,7 @@
                             "Color": color,
                             "InternalId": commentID
                         };
+                        console.log('nContentControlProperties', nContentControlProperties);
                         window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, nContentControlProperties]);
                         var sDocumentEditingRestrictions = "readOnly";
                         window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
