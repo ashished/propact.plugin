@@ -25,6 +25,9 @@
 
     window.Asc.plugin.init = function (text) {
 
+        var sDocumentEditingRestrictions = "readOnly";
+        window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+
         // Plugin Code - Start CM //
         var displayNoneClass = "d-none";
         var disabledClass = "disabled";
