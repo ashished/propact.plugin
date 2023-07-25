@@ -483,13 +483,14 @@
                             G: 215,
                             B: 248,
                         };
-                        window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, {
+                        nContentControlProperties = {
                             "Id": commentID,
                             "Tag": commentID,
                             "Lock": 1,
                             "Color": color,
-                            "internalId": commentID
-                        }]);
+                            "InternalId": commentID
+                        };
+                        window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, nContentControlProperties]);
                         var sDocumentEditingRestrictions = "readOnly";
                         window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
                         document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
