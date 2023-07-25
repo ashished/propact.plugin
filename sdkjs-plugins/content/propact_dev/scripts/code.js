@@ -26,12 +26,12 @@
     window.Asc.plugin.init = function (text) {
 
         if (!flagInit) {
-            this.executeMethod ("GetAllContentControls", null, function (data) {
+            this.executeMethod("GetAllContentControls", null, function (data) {
                 for (var i = 0; i < data.length; i++) {
                     console.log('ContentControls ' + i, data[i]);
                     // if (data[i].Tag == 11) {
-                        // this.Asc.plugin.executeMethod ("SelectContentControl", [data[i].InternalId]);
-                        // break;
+                    // this.Asc.plugin.executeMethod ("SelectContentControl", [data[i].InternalId]);
+                    // break;
                     // }
                 }
             });
@@ -497,11 +497,11 @@
                             B: 248,
                         };
                         nContentControlProperties = {
-                            "Id": commentID,
+                            "Id": Date.now() + '-' + Math.floor(Math.random() * (100 - 1 + 1)) + 1,
                             "Tag": commentID,
                             "Lock": 1,
                             "Color": color,
-                            "InternalId": commentID
+                            "InternalId": Date.now() + '-' + Math.floor(Math.random() * (100 - 1 + 1)) + 1
                         };
                         console.log('nContentControlProperties', nContentControlProperties);
                         window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, nContentControlProperties]);
@@ -627,7 +627,7 @@
             document.getElementById('inviteUsersInput').placeholder = placeholderText;
         }
 
-        document.getElementById('inviteUsersInput').addEventListener('click', function() {
+        document.getElementById('inviteUsersInput').addEventListener('click', function () {
             if (toggleInviteUsersDivShow) {
                 document.getElementById('inviteUsersBox').classList.remove(displayNoneClass);
             } else {
