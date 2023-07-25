@@ -485,9 +485,10 @@
                         };
                         window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, {
                             "Id": commentID,
-                            "Tag": text.replace(/\n/g, "<br>"),
-                            "Lock": 0,
-                            "Color": color
+                            "Tag": commentID,
+                            "Lock": 1,
+                            "Color": color,
+                            "internalId": commentID
                         }]);
                         var sDocumentEditingRestrictions = "readOnly";
                         window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
