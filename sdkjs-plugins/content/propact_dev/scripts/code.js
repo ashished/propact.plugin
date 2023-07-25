@@ -475,6 +475,8 @@
                     document.getElementById("clauseForm").reset();
                     const responseData = data;
                     if (responseData && responseData.status == true && responseData.code == 200) {
+                        var sDocumentEditingRestrictions = "none";
+                        window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
                         var nContentControlType = 2;
                         color = {
                             R: 104,
@@ -487,6 +489,8 @@
                             "Lock": 0,
                             "Color": color
                         }]);
+                        var sDocumentEditingRestrictions = "readOnly";
+                        window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
                         document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
                         document.getElementById('divContractCreate').classList.add(displayNoneClass);
                     }
