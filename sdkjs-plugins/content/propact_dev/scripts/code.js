@@ -462,7 +462,7 @@
          * Create clause section for contract
          */
         function createClauseSection() {
-            var commentID = generateRandomCommentID();
+            var commentID = Date.now() + '-' + Math.floor(Math.random() * (100 - 1 + 1)) + 1;
             var form = document.getElementById('clauseForm');
             var data = JSON.stringify({
                 contractId: documentID,
@@ -497,11 +497,11 @@
                             B: 248,
                         };
                         nContentControlProperties = {
-                            "Id": Date.now() + '-' + Math.floor(Math.random() * (100 - 1 + 1)) + 1,
+                            "Id": commentID,
                             "Tag": commentID,
                             "Lock": 1,
                             "Color": color,
-                            "InternalId": Date.now() + '-' + Math.floor(Math.random() * (100 - 1 + 1)) + 1
+                            "InternalId": commentID
                         };
                         console.log('nContentControlProperties', nContentControlProperties);
                         window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, nContentControlProperties]);
