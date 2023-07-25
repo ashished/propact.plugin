@@ -118,7 +118,6 @@
                 document.getElementById('divContractLists').classList.add(displayNoneClass);
                 document.getElementById('divContractCreate').classList.remove(displayNoneClass);
                 toggleInviteUsersDivShow = true;
-                document.getElementById('divContractLists').classList.add(displayNoneClass);
             }
         });
 
@@ -239,6 +238,7 @@
                             document.getElementById('organizationName').textContent = responseData.data.oppositeUser.company.companyName;
                             document.getElementById('counterpartyName').textContent = responseData.data.oppositeUser.firstName + " " + responseData.data.oppositeUser.lastName;
                             getContractTeamAndUserList();
+                            getContractSectionList();
                         } else if ((responseData.data.openContractDetails && responseData.data.openContractDetails.counterPartyInviteStatus && responseData.data.openContractDetails.counterPartyInviteStatus == 'Pending') || responseData.data.counterPartyInviteStatus == 'Pending') {
                             document.getElementById('divInviteCounterparty').classList.remove(displayNoneClass);
                         }
@@ -346,6 +346,32 @@
                             document.getElementById('accordionBodyUsers').innerHTML = html;
                         }
                     }
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error('Error:', error);
+                });
+        }
+
+        /**
+         * Get contract section list
+         */
+        function getContractSectionList() {
+            const getContractSectionListUrl = apiBaseUrl + '/contractSection/getContractSectionList/' + documentID;
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + authToken
+            };
+            const requestOptions = {
+                method: 'GET',
+                headers: headers,
+            };
+            fetch(getContractSectionListUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data
+                    const responseData = data;
+                    console.log('getContractSectionListResponse', responseData);
                 })
                 .catch(error => {
                     // Handle any errors
