@@ -74,8 +74,12 @@
         // Get & Set APIBASEURL
 
         if (documentMode == 'markup') {
+            var sDocumentEditingRestrictions = "none";
+            window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
             document.getElementById('btnCreateClause').classList.add(disabledClass);
         } else {
+            var sDocumentEditingRestrictions = "readOnly";
+            window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
             if (text) {
                 document.getElementById('btnCreateClause').classList.remove(disabledClass);
             } else {
@@ -246,12 +250,6 @@
                             document.getElementById('organizationName').textContent = responseData.data.oppositeUser.company.companyName;
                             document.getElementById('counterpartyName').textContent = responseData.data.oppositeUser.firstName + " " + responseData.data.oppositeUser.lastName;
                             if (documentMode != 'markup') {
-                                var sDocumentEditingRestrictions = "readOnly";
-                                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
-                                getContractTeamAndUserList();
-                            } else {
-                                var sDocumentEditingRestrictions = "none";
-                                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
                                 getContractTeamAndUserList();
                             }
                             getContractSectionList();
