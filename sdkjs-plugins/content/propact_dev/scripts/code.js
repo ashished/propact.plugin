@@ -36,6 +36,7 @@
                 var sDocumentEditingRestrictions = "readOnly";
                 window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
             }
+            console.log('sDocumentEditingRestrictions', sDocumentEditingRestrictions);
             flagInit = true;
         }
 
