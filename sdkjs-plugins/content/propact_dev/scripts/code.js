@@ -25,6 +25,25 @@
 
     window.Asc.plugin.init = function (text) {
 
+        var documentMode = '';
+        documentMode = getDocumentMode(window.Asc.plugin.info.documentCallbackUrl);
+
+        if (!flagInit) {
+            if (documentMode == 'markup') {
+                var sDocumentEditingRestrictions = "none";
+                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+            } else {
+                var sDocumentEditingRestrictions = "readOnly";
+                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+            }
+            flagInit = true;
+        }
+
+    }
+
+
+    /*window.Asc.plugin.init = function (text) {
+
         // var sDocumentEditingRestrictions = "readOnly";
         // window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
 
@@ -159,11 +178,11 @@
             document.getElementById('divContractCreate').classList.add(displayNoneClass);
         });
 
-        /*const varBtnRedirectClauseLists = document.getElementById('btnRedirectClauseLists');
+        /!*const varBtnRedirectClauseLists = document.getElementById('btnRedirectClauseLists');
         varBtnRedirectClauseLists.addEventListener('click', function () {
             document.getElementById('divContractCreate').classList.add(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
-        });*/
+        });*!/
         // Create contract clause screen
 
         // Contract chat history screen
@@ -215,9 +234,9 @@
 
         // });
 
-        /**
+        /!**
          * Get contract user details when plugin init
-         */
+         *!/
         function getOpenContractUserDetails() {
             const getContractUserDetailsUrl = apiBaseUrl + '/contract/getOpenContractUserDetails/' + documentID;
             const headers = {
@@ -267,9 +286,9 @@
                 });
         }
 
-        /**
+        /!**
          * Get Contract Team And User List
-         */
+         *!/
         function getContractTeamAndUserList() {
             const getContractTeamAndUserListUrl = apiBaseUrl + '/meeting/getContractTeamAndUserList/' + documentID;
             const headers = {
@@ -370,9 +389,9 @@
                 });
         }
 
-        /**
+        /!**
          * Get contract section list
-         */
+         *!/
         function getContractSectionList() {
             const getContractSectionListUrl = apiBaseUrl + '/contractSection/getContractSectionList/' + documentID;
             const headers = {
@@ -396,9 +415,9 @@
                 });
         }
 
-        /**
+        /!**
          * Invite counterparties
-         */
+         *!/
         function inviteCounterparties() {
             var form = document.getElementById('inviteForm');
             var data = JSON.stringify({
@@ -440,9 +459,9 @@
                 });
         }
 
-        /**
+        /!**
          * Cancel Invitation
-         */
+         *!/
         function cancelInvitation() {
             const cancelInvitationsUrl = apiBaseUrl + '/contract/cancelInvitationEmail/' + documentID;
             const headers = {
@@ -472,9 +491,9 @@
                 });
         }
 
-        /**
+        /!**
          * Resend counterparty invitation
-         */
+         *!/
         function resendCounterpartyInvitation() {
             const resendCounterpartyInvitationUrl = apiBaseUrl + '/contract/resendInvitationEmail/' + documentID;
             const headers = {
@@ -501,9 +520,9 @@
                 });
         }
 
-        /**
+        /!**
          * Create clause section for contract
-         */
+         *!/
         function createClauseSection() {
             var randomNumber = Math.floor(Math.random() * (1000000 - 1 + 1)) + 1;
             var commentID = Date.now() + '-' + randomNumber;
@@ -561,10 +580,10 @@
                 });
         }
 
-        /**
+        /!**
          * Generate Random Comment ID
          * @returns {string}
-         */
+         *!/
         function generateRandomCommentID() {
             const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
             let randomString = '';
@@ -590,10 +609,10 @@
             return randomString;
         }
 
-        /**
+        /!**
          * @param url
          * @returns {*|string}
-         */
+         *!/
         function getDocumentMode(url) {
             const urlArr = url.split('/');
             return urlArr[urlArr.length - 2];
@@ -691,7 +710,7 @@
 
         // Plugin Code - End CM //
 
-    };
+    };*/
 
 
 })(window, undefined);
