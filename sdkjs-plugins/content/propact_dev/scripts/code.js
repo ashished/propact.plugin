@@ -45,7 +45,7 @@
         // $(document).ready(function () {
 
         // Get & Set documentID
-        documentID = window.Asc.plugin.info.documentId.replace(/(_ss|_cp)/g, '');
+        documentID = getDocumentID(window.Asc.plugin.info.documentCallbackUrl);
         // Get & Set documentID
 
         // Get & Set AuthToken
@@ -589,6 +589,15 @@
         function getDocumentMode(url) {
             const urlArr = url.split('/');
             return urlArr[urlArr.length - 2];
+        }
+
+        /**
+         * @param url
+         * @returns {*|string}
+         */
+        function getDocumentID(url) {
+            const urlArr = url.split('/');
+            return urlArr[urlArr.length - 4];
         }
 
         $(document).on('click', '#inviteteams', function () {
