@@ -25,33 +25,6 @@
 
     window.Asc.plugin.init = function (text) {
 
-        var documentMode = '';
-        documentMode = getDocumentMode(window.Asc.plugin.info.documentCallbackUrl);
-
-        if (!flagInit) {
-            if (documentMode !== 'markup') {
-                var sDocumentEditingRestrictions = "readOnly";
-                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
-            }
-            console.log('sDocumentEditingRestrictions', sDocumentEditingRestrictions);
-            flagInit = true;
-        }
-
-        /**
-        * @param url
-        * @returns {*|string}
-        */
-        function getDocumentMode(url) {
-            const urlArr = url.split('/');
-            return urlArr[urlArr.length - 2];
-        }
-
-
-    }
-
-
-    /*window.Asc.plugin.init = function (text) {
-
         // var sDocumentEditingRestrictions = "readOnly";
         // window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
 
@@ -86,26 +59,6 @@
         // Get & Set APIBASEURL
         // apiBaseUrl = url.split('/').slice(0, 6).join('/');
         // Get & Set APIBASEURL
-
-        if (!flagInit) {
-            this.executeMethod("GetAllContentControls", null, function (data) {
-                for (var i = 0; i < data.length; i++) {
-                    console.log('ContentControls ' + i, data[i]);
-                    // if (data[i].Tag == 11) {
-                    // this.Asc.plugin.executeMethod ("SelectContentControl", [data[i].InternalId]);
-                    // break;
-                    // }
-                }
-            });
-            if (documentMode == 'markup') {
-                var sDocumentEditingRestrictions = "none";
-                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
-            } else {
-                var sDocumentEditingRestrictions = "readOnly";
-                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
-            }
-            flagInit = true;
-        }
 
         if (documentMode == 'markup') {
             document.getElementById('btnCreateClause').classList.add(disabledClass);
@@ -186,11 +139,11 @@
             document.getElementById('divContractCreate').classList.add(displayNoneClass);
         });
 
-        /!*const varBtnRedirectClauseLists = document.getElementById('btnRedirectClauseLists');
+        /*const varBtnRedirectClauseLists = document.getElementById('btnRedirectClauseLists');
         varBtnRedirectClauseLists.addEventListener('click', function () {
             document.getElementById('divContractCreate').classList.add(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
-        });*!/
+        });*/
         // Create contract clause screen
 
         // Contract chat history screen
@@ -242,9 +195,9 @@
 
         // });
 
-        /!**
+        /**
          * Get contract user details when plugin init
-         *!/
+         */
         function getOpenContractUserDetails() {
             const getContractUserDetailsUrl = apiBaseUrl + '/contract/getOpenContractUserDetails/' + documentID;
             const headers = {
@@ -260,7 +213,19 @@
                 .then(data => {
                     // Handle the response data
                     const responseData = data;
-                    if (responseData && responseData.status == true && responseData.code == 200) {
+                    if (responseData && responseData.status == true && responseData.code == 200 && responseData.data) {
+                        if (!flagInit) {
+                            if (responseData.data.openContractDetails && responseData.data.openContractDetails.counterPartyInviteStatus == 'Accepted') {
+                                if (documentMode == 'markup') {
+                                    var sDocumentEditingRestrictions = "none";
+                                    window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+                                } else {
+                                    var sDocumentEditingRestrictions = "readOnly";
+                                    window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+                                }
+                            }
+                            flagInit = true;
+                        }
                         if (responseData.data.invitationDetail && responseData.data.invitationDetail._id) {
                             document.getElementById('divInviteCounterparty').classList.add(displayNoneClass);
                             document.getElementById('divInviteCounterpartyPending').classList.remove(displayNoneClass);
@@ -294,9 +259,9 @@
                 });
         }
 
-        /!**
+        /**
          * Get Contract Team And User List
-         *!/
+         */
         function getContractTeamAndUserList() {
             const getContractTeamAndUserListUrl = apiBaseUrl + '/meeting/getContractTeamAndUserList/' + documentID;
             const headers = {
@@ -397,9 +362,9 @@
                 });
         }
 
-        /!**
+        /**
          * Get contract section list
-         *!/
+         */
         function getContractSectionList() {
             const getContractSectionListUrl = apiBaseUrl + '/contractSection/getContractSectionList/' + documentID;
             const headers = {
@@ -423,9 +388,9 @@
                 });
         }
 
-        /!**
+        /**
          * Invite counterparties
-         *!/
+         */
         function inviteCounterparties() {
             var form = document.getElementById('inviteForm');
             var data = JSON.stringify({
@@ -467,9 +432,9 @@
                 });
         }
 
-        /!**
+        /**
          * Cancel Invitation
-         *!/
+         */
         function cancelInvitation() {
             const cancelInvitationsUrl = apiBaseUrl + '/contract/cancelInvitationEmail/' + documentID;
             const headers = {
@@ -499,9 +464,9 @@
                 });
         }
 
-        /!**
+        /**
          * Resend counterparty invitation
-         *!/
+         */
         function resendCounterpartyInvitation() {
             const resendCounterpartyInvitationUrl = apiBaseUrl + '/contract/resendInvitationEmail/' + documentID;
             const headers = {
@@ -528,9 +493,9 @@
                 });
         }
 
-        /!**
+        /**
          * Create clause section for contract
-         *!/
+         */
         function createClauseSection() {
             var randomNumber = Math.floor(Math.random() * (1000000 - 1 + 1)) + 1;
             var commentID = Date.now() + '-' + randomNumber;
@@ -588,10 +553,10 @@
                 });
         }
 
-        /!**
+        /**
          * Generate Random Comment ID
          * @returns {string}
-         *!/
+         */
         function generateRandomCommentID() {
             const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
             let randomString = '';
@@ -617,10 +582,10 @@
             return randomString;
         }
 
-        /!**
+        /**
          * @param url
          * @returns {*|string}
-         *!/
+         */
         function getDocumentMode(url) {
             const urlArr = url.split('/');
             return urlArr[urlArr.length - 2];
@@ -718,7 +683,7 @@
 
         // Plugin Code - End CM //
 
-    };*/
+    };
 
 
 })(window, undefined);
