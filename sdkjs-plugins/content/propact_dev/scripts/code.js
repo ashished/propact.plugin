@@ -25,19 +25,6 @@
 
     window.Asc.plugin.init = function (text) {
 
-        if (!flagInit) {
-            this.executeMethod("GetAllContentControls", null, function (data) {
-                for (var i = 0; i < data.length; i++) {
-                    console.log('ContentControls ' + i, data[i]);
-                    // if (data[i].Tag == 11) {
-                    // this.Asc.plugin.executeMethod ("SelectContentControl", [data[i].InternalId]);
-                    // break;
-                    // }
-                }
-            });
-            flagInit = true;
-        }
-
         // var sDocumentEditingRestrictions = "readOnly";
         // window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
 
@@ -73,13 +60,29 @@
         // apiBaseUrl = url.split('/').slice(0, 6).join('/');
         // Get & Set APIBASEURL
 
+        if (!flagInit) {
+            this.executeMethod("GetAllContentControls", null, function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    console.log('ContentControls ' + i, data[i]);
+                    // if (data[i].Tag == 11) {
+                    // this.Asc.plugin.executeMethod ("SelectContentControl", [data[i].InternalId]);
+                    // break;
+                    // }
+                }
+            });
+            if (documentMode == 'markup') {
+                var sDocumentEditingRestrictions = "none";
+                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+            } else {
+                var sDocumentEditingRestrictions = "readOnly";
+                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+            }
+            flagInit = true;
+        }
+
         if (documentMode == 'markup') {
-            var sDocumentEditingRestrictions = "none";
-            window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
             document.getElementById('btnCreateClause').classList.add(disabledClass);
         } else {
-            var sDocumentEditingRestrictions = "readOnly";
-            window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
             if (text) {
                 document.getElementById('btnCreateClause').classList.remove(disabledClass);
             } else {
