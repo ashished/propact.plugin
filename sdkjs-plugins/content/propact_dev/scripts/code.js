@@ -66,13 +66,7 @@
         // $(document).ready(function () {
 
         // Get & Set documentID
-        if (window.Asc.plugin.info.documentId.include('_ss')) {
-            documentID = window.Asc.plugin.info.documentId.replaceAll('_ss', '');
-        } else if (window.Asc.plugin.info.documentId.include('_cc')) {
-            documentID = window.Asc.plugin.info.documentId.replaceAll('_cc', '');
-        } else {
-            documentID = window.Asc.plugin.info.documentId;
-        }
+        documentID = window.Asc.plugin.info.documentId.replace(/(_ss|_cp)/g, '');
         // Get & Set documentID
 
         // Get & Set AuthToken
