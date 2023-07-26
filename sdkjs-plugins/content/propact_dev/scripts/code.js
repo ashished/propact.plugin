@@ -249,6 +249,10 @@
                                 var sDocumentEditingRestrictions = "readOnly";
                                 window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
                                 getContractTeamAndUserList();
+                            } else {
+                                var sDocumentEditingRestrictions = "none";
+                                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+                                getContractTeamAndUserList();
                             }
                             getContractSectionList();
                         } else if ((responseData.data.openContractDetails && responseData.data.openContractDetails.counterPartyInviteStatus && responseData.data.openContractDetails.counterPartyInviteStatus == 'Pending') || responseData.data.counterPartyInviteStatus == 'Pending') {
