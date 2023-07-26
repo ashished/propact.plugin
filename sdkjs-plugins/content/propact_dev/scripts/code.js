@@ -29,10 +29,7 @@
         documentMode = getDocumentMode(window.Asc.plugin.info.documentCallbackUrl);
 
         if (!flagInit) {
-            if (documentMode == 'markup') {
-                var sDocumentEditingRestrictions = "none";
-                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
-            } else {
+            if (documentMode !== 'markup') {
                 var sDocumentEditingRestrictions = "readOnly";
                 window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
             }
