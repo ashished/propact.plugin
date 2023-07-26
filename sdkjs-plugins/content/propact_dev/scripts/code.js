@@ -39,6 +39,16 @@
             flagInit = true;
         }
 
+        /**
+        * @param url
+        * @returns {*|string}
+        */
+        function getDocumentMode(url) {
+            const urlArr = url.split('/');
+            return urlArr[urlArr.length - 2];
+        }
+
+
     }
 
 
