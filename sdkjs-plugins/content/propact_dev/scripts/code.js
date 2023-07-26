@@ -46,6 +46,7 @@
         var disabledClass = "disabled";
         var authToken = '';
         var documentID = '';
+        var documentMode = '';
         var apiBaseUrl = 'http://localhost:3000/api/v1/app';
         var IMAGE_USER_PATH_LINK = 'https://propact.s3.amazonaws.com/';
         var inviteTeamListIDs = [];
@@ -53,15 +54,6 @@
         var toggleInviteUsersDivShow = true;
         var selectedInvitedUsers = [];
         var selectedInvitedTeams = [];
-
-        if (text) {
-            document.getElementById('btnCreateClause').classList.remove(disabledClass);
-        } else {
-            if (!document.getElementById('btnCreateClause').classList.contains(disabledClass)) {
-                document.getElementById('btnCreateClause').classList.add(disabledClass);
-            }
-        }
-
 
         // $(document).ready(function () {
 
@@ -73,9 +65,25 @@
         authToken = window.Asc.plugin.info.documentCallbackUrl.split('/').pop();
         // Get & Set AuthToken
 
+        // Get & document mode
+        documentMode = getDocumentMode(window.Asc.plugin.info.documentCallbackUrl);
+        // Get & document mode
+
         // Get & Set APIBASEURL
         // apiBaseUrl = url.split('/').slice(0, 6).join('/');
         // Get & Set APIBASEURL
+
+        if (documentMode == 'markup') {
+            document.getElementById('btnCreateClause').classList.add(disabledClass);
+        } else {
+            if (text) {
+                document.getElementById('btnCreateClause').classList.remove(disabledClass);
+            } else {
+                if (!document.getElementById('btnCreateClause').classList.contains(disabledClass)) {
+                    document.getElementById('btnCreateClause').classList.add(disabledClass);
+                }
+            }
+        }
 
         // Get contract details
         if (documentID && authToken) {
@@ -237,9 +245,11 @@
                             document.getElementById('userProfilerole').textContent = responseData.data.loggedInUserDetails.role;
                             document.getElementById('organizationName').textContent = responseData.data.oppositeUser.company.companyName;
                             document.getElementById('counterpartyName').textContent = responseData.data.oppositeUser.firstName + " " + responseData.data.oppositeUser.lastName;
-                            var sDocumentEditingRestrictions = "readOnly";
-                            window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
-                            getContractTeamAndUserList();
+                            if (documentMode != 'markup') {
+                                var sDocumentEditingRestrictions = "readOnly";
+                                window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+                                getContractTeamAndUserList();
+                            }
                             getContractSectionList();
                         } else if ((responseData.data.openContractDetails && responseData.data.openContractDetails.counterPartyInviteStatus && responseData.data.openContractDetails.counterPartyInviteStatus == 'Pending') || responseData.data.counterPartyInviteStatus == 'Pending') {
                             document.getElementById('divInviteCounterparty').classList.remove(displayNoneClass);
@@ -573,6 +583,15 @@
                 randomString += characters.charAt(Math.floor(Math.random() * characters.length));
             }
             return randomString;
+        }
+
+        /**
+         * @param url
+         * @returns {*|string}
+         */
+        function getDocumentMode(url) {
+            const urlArr = url.split('/');
+            return urlArr[urlArr.length - 2];
         }
 
         $(document).on('click', '#inviteteams', function () {
