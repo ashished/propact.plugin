@@ -302,7 +302,8 @@
                     if (document.getElementById(tagLists[selectedTag].Id) && selectedCommentThereadID == '') {
                         selectedCommentThereadID = tagLists[selectedTag].Tag;
                         $('.div-selected').removeClass('div-selected');
-                        $('#cluaseDetails').html('<span>'+tagLists[selectedTag].Tag+'</span>');
+                        var myDiv = document.getElementById('cluaseDetails');
+                        myDiv.textContent = selectedCommentThereadID;
                         $('#contractListItemsDiv #' + tagLists[selectedTag].Id).addClass('div-selected');
                     } else {
                         selectedCommentThereadID = '';
