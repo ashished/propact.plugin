@@ -163,6 +163,12 @@
         // Contract chat history screen
 
         // Contract sameside chat screen
+        const varBtnGoToConversionHistory = document.getElementById('btnGoToConversionHistory');
+        varBtnGoToConversionHistory.addEventListener('click', function () {
+            document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
+            document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
+        });
+
         const varBtnGoToCounterpartyA = document.getElementById('btnGoToCounterpartyA');
         varBtnGoToCounterpartyA.addEventListener('click', function () {
             document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
