@@ -262,6 +262,9 @@
             var elementID = $(this).attr('id');
             let tagExists = tagLists.findIndex((ele) => +ele.Id == +elementID);
             if (tagExists > -1) {
+                selectedCommentThereadID = tagLists[tagExists].Tag;
+                var myDiv = document.getElementById('cluaseDetails');
+                myDiv.textContent = selectedCommentThereadID;
                 window.Asc.plugin.executeMethod("SelectContentControl",[tagLists[tagExists].InternalId]);
             }
         });
