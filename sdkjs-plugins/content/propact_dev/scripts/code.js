@@ -464,7 +464,9 @@
                         document.getElementById('counterpartyImage').src = responseData.data.oppositeUser.imageUrl;
                         document.getElementById('organizationImage').src = responseData.data.oppositeUser.company.imageUrl;
                         document.getElementById('userProfileName').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
+                        document.getElementById('userProfileNameA').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
                         document.getElementById('userProfilerole').textContent = responseData.data.loggedInUserDetails.role;
+                        document.getElementById('userProfileroleA').textContent = responseData.data.loggedInUserDetails.role;
                         document.getElementById('organizationName').textContent = responseData.data.oppositeUser.company.companyName;
                         document.getElementById('counterpartyName').textContent = responseData.data.oppositeUser.firstName + " " + responseData.data.oppositeUser.lastName;
                         if (documentMode != 'markup') {
@@ -564,8 +566,8 @@
                                 '\t\t\t\t<img src="' + (ele.userImage ? IMAGE_USER_PATH_LINK + ele.userImage : 'images/no-profile-image.jpg') + '" alt="">\n' +
                                 '\t\t\t</span>\n' +
                                 '\t\t\t<div class="user-inner">\n' +
-                                '\t\t\t\t<span class="user-name" id="userProfileName">' + ele.itemName + '</span>\n' +
-                                '\t\t\t\t<p id="userProfilerole">' + ele.role + '</p>\n' +
+                                '\t\t\t\t<span class="user-name" id="userProfileNameSpan">' + ele.itemName + '</span>\n' +
+                                '\t\t\t\t<p id="userProfileroleSpan">' + ele.role + '</p>\n' +
                                 '\t\t\t</div>\n' +
                                 '\t\t</div>\n' +
                                 '\t</label>\n' +
