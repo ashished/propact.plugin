@@ -144,6 +144,7 @@
         // Contract chat history screen
         const varBtnRedirectClauseListsA = document.getElementById('btnRedirectClauseListsA');
         varBtnRedirectClauseListsA.addEventListener('click', function () {
+            selectedCommentThereadID = '';
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
@@ -170,6 +171,7 @@
 
         const varBtnRedirectClauseListsB = document.getElementById('btnRedirectClauseListsB');
         varBtnRedirectClauseListsB.addEventListener('click', function () {
+            selectedCommentThereadID = '';
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
             document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
         });
@@ -297,9 +299,10 @@
                     window.Asc.plugin.executeMethod("SelectContentControl", [tagLists[selectedTag].Id]);
                     fClickBtnCur = false;
                 } else if (!($('.div-selected').length && $('.div-selected')[0].id === tagLists[selectedTag].Id) && tagLists[selectedTag].Id) {
-                    if (document.getElementById(tagLists[selectedTag].Id)) {
+                    if (document.getElementById(tagLists[selectedTag].Id) && selectedCommentThereadID == '') {
                         selectedCommentThereadID = tagLists[selectedTag].Tag;
                         $('.div-selected').removeClass('div-selected');
+                        $('#cluaseDetails').innerText(tagLists[selectedTag].Tag);
                         $('#contractListItemsDiv #' + tagLists[selectedTag].Id).addClass('div-selected');
                     } else {
                         selectedCommentThereadID = '';
