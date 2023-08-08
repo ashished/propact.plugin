@@ -358,6 +358,7 @@
 
         document.getElementById('chatBodyID').onscroll = (e) => {
             if (document.getElementById('chatBodyID')?.scrollTop  == 0 && chatNextPage) {
+                console.log('Scroll Fn Called');
                 getContractSectionMessageList(withType == 'Our Team' ? 'our' : 'Counterparty');
             }
         };
