@@ -1248,6 +1248,7 @@
                         if (responseData.data.data.length > 0) {
                             let result;
                             if (chatNextPage == 1) {
+                                generalChatMessage = [];
                                 result = responseData?.data?.data.reverse();
                             } else {
                                 result = responseData?.data?.data;
@@ -1255,32 +1256,33 @@
                             let setLastHeight = document.getElementById('chatArea').scrollHeight;
                             result.forEach((chatMessage) => {
                                 let html = '';
-                                if (chatMessage.from == loggedInUserDetails._id) {
-                                    console.log('My Message', chatMessage.message);
-                                    html += '<div class="message-wrapper reverse">\n' +
-                                        '   <div class="profile-picture">\n' +
-                                        '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
-                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
-                                        '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                                        '   </div>\n' +
-                                        '   <div class="message-content">\n' +
-                                        '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
-                                        '      </div>\n' +
-                                        '   </div>\n' +
-                                        '</div>\n';
-                                } else {
-                                    console.log('Oppsite Message', chatMessage.message);
-                                    html += '<div class="message-wrapper grey-color">\n' +
-                                        '   <div class="profile-picture">\n' +
-                                        '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
-                                        '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
-                                        '   </div>\n' +
-                                        '   <div class="message-content">\n' +
-                                        '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
-                                        '      </div>\n' +
-                                        '   </div>\n' +
-                                        '</div>\n';
+                                if (generalChatMessage.findIndex((ele) => +ele._id == chatMessage._id) < 0) {
+                                    if (chatMessage.from == loggedInUserDetails._id) {
+                                        html += '<div class="message-wrapper reverse">\n' +
+                                            '   <div class="profile-picture">\n' +
+                                            '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
+                                            '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
+                                            '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                                            '   </div>\n' +
+                                            '   <div class="message-content">\n' +
+                                            '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
+                                            '      </div>\n' +
+                                            '   </div>\n' +
+                                            '</div>\n';
+                                    } else {
+                                        html += '<div class="message-wrapper grey-color">\n' +
+                                            '   <div class="profile-picture">\n' +
+                                            '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                                            '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
+                                            '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
+                                            '   </div>\n' +
+                                            '   <div class="message-content">\n' +
+                                            '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
+                                            '      </div>\n' +
+                                            '   </div>\n' +
+                                            '</div>\n';
+                                    }
+                                    generalChatMessage.push(chatMessage);
                                 }
 
                                 if (chatNextPage == 1) {
