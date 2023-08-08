@@ -205,6 +205,12 @@
 
         const varBtnGoToConversionHistory = document.getElementById('btnGoToConversionHistory');
         varBtnGoToConversionHistory.addEventListener('click', function () {
+            document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
+            document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
+        });
+
+        const varBtnGoToCounterpartyA = document.getElementById('btnGoToCounterpartyA');
+        varBtnGoToCounterpartyA.addEventListener('click', async function () {
             withType = 'Counterparty';
             messageConfirmationFor = 'Opposite Side';
             document.getElementById('chatArea').innerHTML = '';
@@ -218,12 +224,6 @@
             document.getElementById('chatHeader').classList.add('counterparty');
             document.getElementById('btnGoToCounterpartyA').classList.add(displayNoneClass);
             document.getElementById('chatFooterInner').classList.add('justify-content-end');
-            document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
-            document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
-        });
-
-        const varBtnGoToCounterpartyA = document.getElementById('btnGoToCounterpartyA');
-        varBtnGoToCounterpartyA.addEventListener('click', function () {
             document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
