@@ -88,12 +88,11 @@
          * @desc Get the open contract and user details
          */
         if (documentID && authToken && !flagInit) {
-            getOpenContractUserDetails();
-
             let socket = io.connect(baseUrl,
                 {auth: {authToken}}
             );
             console.log('socket', socket);
+            getOpenContractUserDetails();
         }
 
         // Invite counterparty screen
