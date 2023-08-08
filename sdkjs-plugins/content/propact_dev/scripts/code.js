@@ -89,7 +89,6 @@
          * @desc Get the open contract and user details
          */
         if (documentID && authToken && !flagInit) {
-            console.log('socket', socket);
             getOpenContractUserDetails();
         }
 
