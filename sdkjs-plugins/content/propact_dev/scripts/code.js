@@ -93,6 +93,7 @@
             let socket = io.connect(baseUrl,
                 {auth: {authToken}}
             );
+            console.log('socket', socket);
         }
 
         // Invite counterparty screen
@@ -349,6 +350,151 @@
                 getContractSectionMessageList(withType == 'Our Team' ? 'our' : 'Counterparty');
             }
         };
+
+        /**============================== Socket Function Start ===============================*/
+        /** Socket Emit: user typing on contract thread */
+        if (socket) {
+            function user_is_typing_contract_section(socket, data) {
+                socket.emit('user_is_typing_contract_section', data);
+            }
+
+            /** Socket On: user typing for same side */
+            socket.on('user_typing_notification_contract_section', data => {
+                if (data) {
+                    if (tyingUserArray.findIndex(x => x == data) == -1) {
+                        tyingUserArray.push(data);
+                    }
+                    let text = '';
+                    if (tyingUserArray.length == 1) {
+                        text = tyingUserArray[0] + " is typing...";
+                    }
+                    if (tyingUserArray.length == 2) {
+                        text = tyingUserArray[0] + " and " + tyingUserArray[1] + " is typing...";
+                    }
+                    if (tyingUserArray.length > 2) {
+                        let otherUserCount = tyingUserArray.length - 2
+                        text = tyingUserArray[0] + ", " + tyingUserArray[1] + " and " + otherUserCount + " others are typing...";
+                    }
+
+                    clearTimeout(typingTimeout);
+                    document.getElementById('typingSpan').textContent = text;
+                }
+                typingTimeout = setTimeout(() => {
+                    document.getElementById('typingSpan').textContent = '';
+                }, 5000);
+            });
+
+            /** Socket On: user typing for counterparty side */
+            socket.on('user_typing_notification_counter_contract_section', data => {
+                if (data) {
+                    if (tyingUserArray.findIndex(x => x == data) == -1) {
+                        tyingUserArray.push(data);
+                    }
+                    let text = '';
+                    if (tyingUserArray.length == 1) {
+                        text = tyingUserArray[0] + " is typing...";
+                    }
+                    if (tyingUserArray.length == 2) {
+                        text = tyingUserArray[0] + " and " + tyingUserArray[1] + " is typing...";
+                    }
+                    if (tyingUserArray.length > 2) {
+                        let otherUserCount = tyingUserArray.length - 2
+                        text = tyingUserArray[0] + ", " + tyingUserArray[1] + " and " + otherUserCount + " others are typing...";
+                    }
+
+                    clearTimeout(typingTimeout);
+                    document.getElementById('typingSpan').textContent = text;
+                }
+                typingTimeout = setTimeout(() => {
+                    document.getElementById('typingSpan').textContent = '';
+                }, 5000);
+            });
+
+            /** Socket On: user message get for same side */
+            socket.on('receive_contract_section_message', data => {
+                let html = '';
+                if (data.from == loggedInUserDetails._id) {
+                    html += '<div class="message-wrapper reverse">\n' +
+                        '   <div class="profile-picture">\n' +
+                        '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                        '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                        '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                        '   </div>\n' +
+                        '   <div class="message-content">\n' +
+                        '      <div class="message">' + data.message +
+                        '      </div>\n' +
+                        '   </div>\n' +
+                        '</div>\n';
+                } else {
+                    html += '<div class="message-wrapper grey-color">\n' +
+                        '   <div class="profile-picture">\n' +
+                        '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                        '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                        '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                        '   </div>\n' +
+                        '   <div class="message-content">\n' +
+                        '      <div class="message">' + data.message +
+                        '      </div>\n' +
+                        '   </div>\n' +
+                        '</div>\n';
+                }
+                var contentDiv = document.getElementById("chatArea");
+                var newElement = document.createElement("div");
+                newElement.innerHTML = html;
+                contentDiv.appendChild(newElement);
+            })
+
+            /** Socket On: user message get for same side */
+            socket.on('receive_counter_contract_section_message', data => {
+                console.log('receive_counter_contract_section_message', data);
+                let html = '';
+                if (data.from == loggedInUserDetails._id) {
+                    html += '<div class="message-wrapper reverse">\n' +
+                        '   <div class="profile-picture">\n' +
+                        '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                        '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                        '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                        '   </div>\n' +
+                        '   <div class="message-content">\n' +
+                        '      <div class="message">' + data.message +
+                        '      </div>\n' +
+                        '   </div>\n' +
+                        '</div>\n';
+                } else {
+                    html += '<div class="message-wrapper grey-color">\n' +
+                        '   <div class="profile-picture">\n' +
+                        '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                        '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                        '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                        '   </div>\n' +
+                        '   <div class="message-content">\n' +
+                        '      <div class="message">' + data.message +
+                        '      </div>\n' +
+                        '   </div>\n' +
+                        '</div>\n';
+                }
+                var contentDiv = document.getElementById("chatArea");
+                var newElement = document.createElement("div");
+                newElement.innerHTML = html;
+                contentDiv.appendChild(newElement);
+            })
+
+            // Handle connection errors
+            socket.on('connect_error', (error) => {
+                console.error('Connection Error:', error.message);
+            });
+
+            // Handle server-rejected connections
+            socket.on('connect_failed', () => {
+                console.error('Connection to server failed');
+            });
+
+            // Handle general error events
+            socket.on('error', (error) => {
+                console.error('Socket Error:', error);
+            });
+        }
+        /**============================== Socket Function End =================================*/
     };
     /**================================== Plugin Init End =================================*/
 
@@ -420,149 +566,6 @@
         fClickLabel = false;
     };
     /**================== Plugin event_onTargetPositionChanged End ========================*/
-
-    /**============================== Socket Function Start ===============================*/
-    /** Socket Emit: user typing on contract thread */
-    function user_is_typing_contract_section(socket, data) {
-        socket.emit('user_is_typing_contract_section', data);
-    }
-
-    /** Socket On: user typing for same side */
-    socket.on('user_typing_notification_contract_section', data => {
-        if (data) {
-            if (tyingUserArray.findIndex(x => x == data) == -1) {
-                tyingUserArray.push(data);
-            }
-            let text = '';
-            if (tyingUserArray.length == 1) {
-                text = tyingUserArray[0] + " is typing...";
-            }
-            if (tyingUserArray.length == 2) {
-                text = tyingUserArray[0] + " and " + tyingUserArray[1] + " is typing...";
-            }
-            if (tyingUserArray.length > 2) {
-                let otherUserCount = tyingUserArray.length - 2
-                text = tyingUserArray[0] + ", " + tyingUserArray[1] + " and " + otherUserCount + " others are typing...";
-            }
-
-            clearTimeout(typingTimeout);
-            document.getElementById('typingSpan').textContent = text;
-        }
-        typingTimeout = setTimeout(() => {
-            document.getElementById('typingSpan').textContent = '';
-        }, 5000);
-    });
-
-    /** Socket On: user typing for counterparty side */
-    socket.on('user_typing_notification_counter_contract_section', data => {
-        if (data) {
-            if (tyingUserArray.findIndex(x => x == data) == -1) {
-                tyingUserArray.push(data);
-            }
-            let text = '';
-            if (tyingUserArray.length == 1) {
-                text = tyingUserArray[0] + " is typing...";
-            }
-            if (tyingUserArray.length == 2) {
-                text = tyingUserArray[0] + " and " + tyingUserArray[1] + " is typing...";
-            }
-            if (tyingUserArray.length > 2) {
-                let otherUserCount = tyingUserArray.length - 2
-                text = tyingUserArray[0] + ", " + tyingUserArray[1] + " and " + otherUserCount + " others are typing...";
-            }
-
-            clearTimeout(typingTimeout);
-            document.getElementById('typingSpan').textContent = text;
-        }
-        typingTimeout = setTimeout(() => {
-            document.getElementById('typingSpan').textContent = '';
-        }, 5000);
-    });
-
-    /** Socket On: user message get for same side */
-    socket.on('receive_contract_section_message', data => {
-        let html = '';
-        if (data.from == loggedInUserDetails._id) {
-            html += '<div class="message-wrapper reverse">\n' +
-                '   <div class="profile-picture">\n' +
-                '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
-                '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
-                '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                '   </div>\n' +
-                '   <div class="message-content">\n' +
-                '      <div class="message">' + data.message +
-                '      </div>\n' +
-                '   </div>\n' +
-                '</div>\n';
-        } else {
-            html += '<div class="message-wrapper grey-color">\n' +
-                '   <div class="profile-picture">\n' +
-                '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
-                '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
-                '   </div>\n' +
-                '   <div class="message-content">\n' +
-                '      <div class="message">' + data.message +
-                '      </div>\n' +
-                '   </div>\n' +
-                '</div>\n';
-        }
-        var contentDiv = document.getElementById("chatArea");
-        var newElement = document.createElement("div");
-        newElement.innerHTML = html;
-        contentDiv.appendChild(newElement);
-    })
-
-    /** Socket On: user message get for same side */
-    socket.on('receive_counter_contract_section_message', data => {
-        console.log('receive_counter_contract_section_message', data);
-        let html = '';
-        if (data.from == loggedInUserDetails._id) {
-            html += '<div class="message-wrapper reverse">\n' +
-                '   <div class="profile-picture">\n' +
-                '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
-                '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
-                '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                '   </div>\n' +
-                '   <div class="message-content">\n' +
-                '      <div class="message">' + data.message +
-                '      </div>\n' +
-                '   </div>\n' +
-                '</div>\n';
-        } else {
-            html += '<div class="message-wrapper grey-color">\n' +
-                '   <div class="profile-picture">\n' +
-                '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
-                '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
-                '   </div>\n' +
-                '   <div class="message-content">\n' +
-                '      <div class="message">' + data.message +
-                '      </div>\n' +
-                '   </div>\n' +
-                '</div>\n';
-        }
-        var contentDiv = document.getElementById("chatArea");
-        var newElement = document.createElement("div");
-        newElement.innerHTML = html;
-        contentDiv.appendChild(newElement);
-    })
-
-    // Handle connection errors
-    socket.on('connect_error', (error) => {
-        console.error('Connection Error:', error.message);
-    });
-
-    // Handle server-rejected connections
-    socket.on('connect_failed', () => {
-        console.error('Connection to server failed');
-    });
-
-    // Handle general error events
-    socket.on('error', (error) => {
-        console.error('Socket Error:', error);
-    });
-    /**============================== Socket Function End =================================*/
 
 
     /**============================== Utils Function Start ================================*/
