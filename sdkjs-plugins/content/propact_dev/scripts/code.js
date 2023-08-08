@@ -32,19 +32,31 @@
     var inviteUserListIDs = [];
     var selectedInvitedUsers = [];
     var selectedInvitedTeams = [];
-    var apiBaseUrl = 'http://localhost:3000/api/v1/app';
+    var baseUrl = 'http://localhost:3000';
+    var apiBaseUrl = baseUrl + '/api/v1/app';
     var IMAGE_USER_PATH_LINK = 'https://propact.s3.amazonaws.com/';
     var clauseRecordLimit = 10;
     var clauseNextPage = 1;
     var clauseHasNextPage = true;
     var searchText = '';
     var searchTimeout;
-    var tagLists = [];
+    let tagLists = [];
     var selectedCommentThereadID = '';
+    var selectedThreadID = '';
+    var developmentMode = true;
+    var loggedInUserDetails;
+    let typingTimeout;
+    let tyingUserArray = [];
+    let generalChatMessage = [];
+    let withType;
+    var counterPartyCustomerDetail;
+    var messageConfirmationFor;
+    var chatRecordLimit = 10;
+    var chatNextPage = 1;
+    var chatHasNextPage = true;
 
 
-    // /********************* Plugin Init - Start CM *********************/ //
-
+    /**================================== Plugin Init Start ===============================*/
     window.Asc.plugin.init = function (text) {
 
         //event "init" for plugin
@@ -77,6 +89,10 @@
          */
         if (documentID && authToken && !flagInit) {
             getOpenContractUserDetails();
+
+            let socket = io.connect(baseUrl,
+                {auth: {authToken}}
+            );
         }
 
         // Invite counterparty screen
@@ -116,15 +132,6 @@
                 toggleInviteUsersDivShow = true;
             }
         });
-
-        const buttonsOpenChatBoard = document.querySelectorAll('.contract-item');
-        // Add a click event listener to each button element
-        buttonsOpenChatBoard.forEach(function (button) {
-            button.addEventListener('click', function () {
-                document.getElementById('divContractLists').classList.add(displayNoneClass);
-                document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
-            });
-        });
         // Contract clause lists screen
 
         // Create contract clause screen
@@ -150,19 +157,53 @@
         });
 
         const varBtnGoToSameSideChat = document.getElementById('btnGoToSameSideChat');
-        varBtnGoToSameSideChat.addEventListener('click', function () {
+        varBtnGoToSameSideChat?.addEventListener('click', async function () {
+            withType = 'Our Team';
+            messageConfirmationFor = 'Same Side';
+            document.getElementById('chatArea').innerHTML = '';
+            chatNextPage = 1;
+            await getContractSectionMessageList('our');
+            let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
+            console.log('chatRoomName', chatRoomName);
+            socket.emit('join_contract_section_chat_room', chatRoomName);
+            console.log('socket', socket);
+            document.getElementById('chatHeader').classList.remove('counterparty');
+            document.getElementById('chatFooterInner').classList.remove('justify-content-end');
             document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
 
         const varBtnGoToCounterparty = document.getElementById('btnGoToCounterparty');
-        varBtnGoToCounterparty.addEventListener('click', function () {
+        varBtnGoToCounterparty?.addEventListener('click', async function () {
+            withType = 'Counterparty';
+            messageConfirmationFor = 'Opposite Side';
+            document.getElementById('chatArea').innerHTML = '';
+            chatNextPage = 1;
+            await getContractSectionMessageList('Counterparty');
+            let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
+            console.log('chatRoomName', chatRoomName);
+            socket.emit('join_contract_section_chat_room', chatRoomName);
+            console.log('socket', socket);
+            document.getElementById('chatHeader').classList.add('counterparty');
+            document.getElementById('btnGoToCounterpartyA').classList.add(displayNoneClass);
+            document.getElementById('chatFooterInner').classList.add('justify-content-end');
             document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
         // Contract chat history screen
 
         // Contract sameside chat screen
+        const varBtnmessageInput = document.getElementById('messageInput');
+        varBtnmessageInput?.addEventListener('keydown', function () {
+            var data = {
+                chatRoomName: withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID,
+                userName: loggedInUserDetails.firstName,
+                with: withType
+            }
+            console.log('data', data);
+            user_is_typing_contract_section(socket, data);
+        });
+
         const varBtnGoToConversionHistory = document.getElementById('btnGoToConversionHistory');
         varBtnGoToConversionHistory.addEventListener('click', function () {
             document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
@@ -263,20 +304,55 @@
             updateInviteUserCheckbox();
         });
 
-        $(document).on('click', '.contract-item', function() {
+        $(document).on('click', '.contract-item', async function () {
             fClickLabel = true;
             var elementID = $(this).attr('id');
             let tagExists = tagLists.findIndex((ele) => +ele.Id == +elementID);
             if (tagExists > -1) {
                 selectedCommentThereadID = tagLists[tagExists].Tag;
+                selectedThreadID = $(this).data('id');
                 var myDiv = document.getElementById('cluaseDetails');
                 myDiv.textContent = selectedCommentThereadID;
-                window.Asc.plugin.executeMethod("SelectContentControl",[tagLists[tagExists].InternalId]);
+                document.getElementById('divContractLists').classList.add(displayNoneClass);
+                document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
+                // window.Asc.plugin.executeMethod("SelectContentControl", [tagLists[tagExists].InternalId]);
             }
         });
 
-    };
+        $(document).on('click', '#btnSend', async function () {
+            console.log('t', $('#messageInput').val());
+            chat_message = $('#messageInput').val();
+            const addNewContractMessageDetail = {
+                "contractId": documentID,
+                "contractSectionId": selectedThreadID,
+                "message": chat_message,
+                "with": withType,
+                "messageType": 'Normal',
+                "companyId": loggedInUserDetails.company._id,
+                "oppositeCompanyId": counterPartyCustomerDetail.company._id,
+                "threadID": selectedCommentThereadID,
+                "status": 'send',
+                "actionperformedbyUser": loggedInUserDetails.firstName + " " + loggedInUserDetails.lastName,
+                "actionperformedbyUserImage": loggedInUserDetails.imageUrl,
+                "messageConfirmationFor": messageConfirmationFor,
+                "chatRoomName": withType == 'Our Team' ? 'user_' + selectedCommentThereadID : 'counter_' + selectedCommentThereadID,
+                // "messageNumber": withType == 'Our Team' ? (items.length < 1 ? 0 : parseInt(localStorage.getItem("userMessageListNumber"))) : (counterPartyitems.length < 1 ? 0 : parseInt(localStorage.getItem("counterMessageListNumber")))
+                "messageNumber": 0
+            }
+            console.log('details', addNewContractMessageDetail);
+            await addContractSectionMessage(addNewContractMessageDetail, socket);
+            console.log(1);
+        });
 
+        document.getElementById('chatBodyID').onscroll = (e) => {
+            if (document.getElementById('chatBodyID')?.scrollTop  == 0 && chatNextPage) {
+                getContractSectionMessageList(withType == 'Our Team' ? 'our' : 'Counterparty');
+            }
+        };
+    };
+    /**================================== Plugin Init End =================================*/
+
+    /**=========================== Plugin onMethodReturn Start ============================*/
     window.Asc.plugin.onMethodReturn = function (returnValue) {
         //evend return for completed methods
         var _plugin = window.Asc.plugin;
@@ -310,6 +386,12 @@
                 } else if (!($('.div-selected').length && $('.div-selected')[0].id === tagLists[selectedTag].Id) && tagLists[selectedTag].Id) {
                     if (document.getElementById(tagLists[selectedTag].Id) && selectedCommentThereadID == '') {
                         selectedCommentThereadID = tagLists[selectedTag].Tag;
+
+                        let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
+                        console.log('chatRoomName', chatRoomName);
+                        socket.emit('join_contract_section_chat_room', chatRoomName);
+                        console.log('socket', socket);
+
                         $('.div-selected').removeClass('div-selected');
                         var myDiv = document.getElementById('cluaseDetails');
                         myDiv.textContent = selectedCommentThereadID;
@@ -325,8 +407,9 @@
             }
         }
     };
+    /**=========================== Plugin onMethodReturn End ==============================*/
 
-
+    /**================ Plugin event_onTargetPositionChanged Start ========================*/
     window.Asc.plugin.event_onTargetPositionChanged = function () {
         //event change cursor position
         //all events are specified in the config file in the "events" field
@@ -336,9 +419,153 @@
         }
         fClickLabel = false;
     };
+    /**================== Plugin event_onTargetPositionChanged End ========================*/
+
+    /**============================== Socket Function Start ===============================*/
+    /** Socket Emit: user typing on contract thread */
+    function user_is_typing_contract_section(socket, data) {
+        socket.emit('user_is_typing_contract_section', data);
+    }
+
+    /** Socket On: user typing for same side */
+    socket.on('user_typing_notification_contract_section', data => {
+        if (data) {
+            if (tyingUserArray.findIndex(x => x == data) == -1) {
+                tyingUserArray.push(data);
+            }
+            let text = '';
+            if (tyingUserArray.length == 1) {
+                text = tyingUserArray[0] + " is typing...";
+            }
+            if (tyingUserArray.length == 2) {
+                text = tyingUserArray[0] + " and " + tyingUserArray[1] + " is typing...";
+            }
+            if (tyingUserArray.length > 2) {
+                let otherUserCount = tyingUserArray.length - 2
+                text = tyingUserArray[0] + ", " + tyingUserArray[1] + " and " + otherUserCount + " others are typing...";
+            }
+
+            clearTimeout(typingTimeout);
+            document.getElementById('typingSpan').textContent = text;
+        }
+        typingTimeout = setTimeout(() => {
+            document.getElementById('typingSpan').textContent = '';
+        }, 5000);
+    });
+
+    /** Socket On: user typing for counterparty side */
+    socket.on('user_typing_notification_counter_contract_section', data => {
+        if (data) {
+            if (tyingUserArray.findIndex(x => x == data) == -1) {
+                tyingUserArray.push(data);
+            }
+            let text = '';
+            if (tyingUserArray.length == 1) {
+                text = tyingUserArray[0] + " is typing...";
+            }
+            if (tyingUserArray.length == 2) {
+                text = tyingUserArray[0] + " and " + tyingUserArray[1] + " is typing...";
+            }
+            if (tyingUserArray.length > 2) {
+                let otherUserCount = tyingUserArray.length - 2
+                text = tyingUserArray[0] + ", " + tyingUserArray[1] + " and " + otherUserCount + " others are typing...";
+            }
+
+            clearTimeout(typingTimeout);
+            document.getElementById('typingSpan').textContent = text;
+        }
+        typingTimeout = setTimeout(() => {
+            document.getElementById('typingSpan').textContent = '';
+        }, 5000);
+    });
+
+    /** Socket On: user message get for same side */
+    socket.on('receive_contract_section_message', data => {
+        let html = '';
+        if (data.from == loggedInUserDetails._id) {
+            html += '<div class="message-wrapper reverse">\n' +
+                '   <div class="profile-picture">\n' +
+                '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                '   </div>\n' +
+                '   <div class="message-content">\n' +
+                '      <div class="message">' + data.message +
+                '      </div>\n' +
+                '   </div>\n' +
+                '</div>\n';
+        } else {
+            html += '<div class="message-wrapper grey-color">\n' +
+                '   <div class="profile-picture">\n' +
+                '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                '   </div>\n' +
+                '   <div class="message-content">\n' +
+                '      <div class="message">' + data.message +
+                '      </div>\n' +
+                '   </div>\n' +
+                '</div>\n';
+        }
+        var contentDiv = document.getElementById("chatArea");
+        var newElement = document.createElement("div");
+        newElement.innerHTML = html;
+        contentDiv.appendChild(newElement);
+    })
+
+    /** Socket On: user message get for same side */
+    socket.on('receive_counter_contract_section_message', data => {
+        console.log('receive_counter_contract_section_message', data);
+        let html = '';
+        if (data.from == loggedInUserDetails._id) {
+            html += '<div class="message-wrapper reverse">\n' +
+                '   <div class="profile-picture">\n' +
+                '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                '   </div>\n' +
+                '   <div class="message-content">\n' +
+                '      <div class="message">' + data.message +
+                '      </div>\n' +
+                '   </div>\n' +
+                '</div>\n';
+        } else {
+            html += '<div class="message-wrapper grey-color">\n' +
+                '   <div class="profile-picture">\n' +
+                '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                '   </div>\n' +
+                '   <div class="message-content">\n' +
+                '      <div class="message">' + data.message +
+                '      </div>\n' +
+                '   </div>\n' +
+                '</div>\n';
+        }
+        var contentDiv = document.getElementById("chatArea");
+        var newElement = document.createElement("div");
+        newElement.innerHTML = html;
+        contentDiv.appendChild(newElement);
+    })
+
+    // Handle connection errors
+    socket.on('connect_error', (error) => {
+        console.error('Connection Error:', error.message);
+    });
+
+    // Handle server-rejected connections
+    socket.on('connect_failed', () => {
+        console.error('Connection to server failed');
+    });
+
+    // Handle general error events
+    socket.on('error', (error) => {
+        console.error('Socket Error:', error);
+    });
+    /**============================== Socket Function End =================================*/
 
 
-    /**====================== Utils Function Start ======================*/
+    /**============================== Utils Function Start ================================*/
     /**
      * @param url
      * @returns {*|string}
@@ -425,14 +652,45 @@
         document.getElementById('inviteUsersInput').placeholder = placeholderText;
     }
 
-    /**====================== Utils Function End ======================*/
+    /**
+     * @param inputDate
+     * @returns {string}
+     */
+    function formatDate(inputDate) {
+        const months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
 
+        const date = new Date(inputDate);
+        const day = date.getDate();
+        const month = months[date.getMonth()];
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const period = hours >= 12 ? "PM" : "AM";
+        const formattedHours = hours % 12 || 12;
 
-    /**====================== API Function Start ======================*/
+        let daySuffix;
+        if (day === 1 || day === 21 || day === 31) {
+            daySuffix = "st";
+        } else if (day === 2 || day === 22) {
+            daySuffix = "nd";
+        } else if (day === 3 || day === 23) {
+            daySuffix = "rd";
+        } else {
+            daySuffix = "th";
+        }
+
+        const formattedDate = `${day}<sup>${daySuffix}</sup> ${month} ${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+        return formattedDate;
+    }
+    /**============================== Utils Function End ==================================*/
+
+    /**================================ API Function Start ================================*/
     /**
      * @desc Get open contract and user details
      */
-    function getOpenContractUserDetails() {
+    function getOpenContractUserDetails(socket) {
         const getContractUserDetailsUrl = apiBaseUrl + '/contract/getOpenContractUserDetails/' + documentID;
         const headers = {
             'Content-Type': 'application/json',
@@ -461,6 +719,8 @@
                         document.getElementById('organizationName').textContent = responseData.data.invitationDetail.organizationName;
                         document.getElementById('counterpartyName').textContent = responseData.data.invitationDetail.firstName + " " + responseData.data.invitationDetail.lastName;
                     } else if (responseData.data.oppositeUser && responseData.data.oppositeUser._id) {
+                        loggedInUserDetails = responseData.data.loggedInUserDetails;
+                        counterPartyCustomerDetail = responseData.data.oppositeUser;
                         document.getElementById('divInviteCounterpartyPending').classList.add(displayNoneClass);
                         document.getElementById('divInviteCounterparty').classList.add(displayNoneClass);
                         document.getElementById('invitationActionPara').classList.add(displayNoneClass);
@@ -636,7 +896,7 @@
                         var html1 = '';
                         result.forEach((ele) => {
                             let commentID = ele.commentId;
-                            html += '<div class="contract-item" data-commentid="' + commentID + '" id="' + commentID.split('-').pop() + '">\n' +
+                            html += '<div class="contract-item" data-id="' + ele._id + '" data-commentid="' + commentID + '" id="' + commentID.split('-').pop() + '">\n' +
                                 '\t\t\t<a href="#">\n' +
                                 '\t\t\t\t\t\t<div class="contract-top">\n' +
                                 '\t\t\t\t\t\t\t\t\t<h3>' + ele.contractSection + '</h3>\n' +
@@ -747,126 +1007,311 @@
      * @desc Cancel the counterparty invitation
      */
     function cancelInvitation() {
-        const cancelInvitationsUrl = apiBaseUrl + '/contract/cancelInvitationEmail/' + documentID;
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + authToken
-        };
-        const requestOptions = {
-            method: 'GET',
-            headers: headers,
-        };
-        fetch(cancelInvitationsUrl, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response data
-                console.log(data);
-                const responseData = data;
-                if (responseData && responseData.status == true && responseData.code == 200) {
-                    document.getElementById('divInviteCounterpartyPending').classList.add(displayNoneClass);
-                    document.getElementById('divInviteCounterparty').classList.remove(displayNoneClass);
-                } else {
+        try {
+            const cancelInvitationsUrl = apiBaseUrl + '/contract/cancelInvitationEmail/' + documentID;
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + authToken
+            };
+            const requestOptions = {
+                method: 'GET',
+                headers: headers,
+            };
+            fetch(cancelInvitationsUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data
+                    console.log(data);
+                    const responseData = data;
+                    if (responseData && responseData.status == true && responseData.code == 200) {
+                        document.getElementById('divInviteCounterpartyPending').classList.add(displayNoneClass);
+                        document.getElementById('divInviteCounterparty').classList.remove(displayNoneClass);
+                    } else {
 
-                }
-            })
-            .catch(error => {
-                // Handle any errors
-                console.error('Error:', error);
-            });
+                    }
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error('Error:', error);
+                });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     }
 
     /**
      * @desc Resend counterparty invitation
      */
     function resendCounterpartyInvitation() {
-        const resendCounterpartyInvitationUrl = apiBaseUrl + '/contract/resendInvitationEmail/' + documentID;
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + authToken
-        };
-        const requestOptions = {
-            method: 'GET',
-            headers: headers,
-        };
-        fetch(resendCounterpartyInvitationUrl, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response data
-                console.log(data);
-                const responseData = data;
-                if (responseData && responseData.status == true && responseData.code == 200) {
-                    console.log(responseData.message);
-                }
-            })
-            .catch(error => {
-                // Handle any errors
-                console.error('Error:', error);
-            });
+        try {
+            const resendCounterpartyInvitationUrl = apiBaseUrl + '/contract/resendInvitationEmail/' + documentID;
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + authToken
+            };
+            const requestOptions = {
+                method: 'GET',
+                headers: headers,
+            };
+            fetch(resendCounterpartyInvitationUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data
+                    console.log(data);
+                    const responseData = data;
+                    if (responseData && responseData.status == true && responseData.code == 200) {
+                        console.log(responseData.message);
+                    }
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error('Error:', error);
+                });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+
     }
 
     /**
      * @desc Create clause section
      */
     function createClauseSection() {
-        var randomNumber = Math.floor(Math.random() * (1000000 - 1 + 1)) + 1;
-        var commentID = Date.now() + '-' + randomNumber;
-        var form = document.getElementById('clauseForm');
-        var data = JSON.stringify({
-            contractId: documentID,
-            contractSection: form.elements['contractSection'].value,
-            contractDescription: form.elements['contractDescription'].value,
-            assignedTeamAndUserDetails: [...selectedInvitedTeams, ...selectedInvitedUsers],
-            commentId: commentID
-        });
-        const createClauseSectionUrl = apiBaseUrl + '/contractSection/createNewContractSection';
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + authToken
-        };
-        const requestOptions = {
-            method: 'POST',
-            headers: headers,
-            body: data
-        };
-        fetch(createClauseSectionUrl, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response data
-                document.getElementById("clauseForm").reset();
-                const responseData = data;
-                if (responseData && responseData.status == true && responseData.code == 200) {
-                    var sDocumentEditingRestrictions = "none";
-                    window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
-                    var nContentControlType = 2;
-                    color = {
-                        R: 104,
-                        G: 215,
-                        B: 248,
-                    };
-                    nContentControlProperties = {
-                        "Id": randomNumber,
-                        "Tag": commentID,
-                        "Lock": 1,
-                        "Color": color,
-                        "InternalId": randomNumber.toString()
-                    };
-                    console.log('nContentControlProperties', nContentControlProperties);
-                    window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, nContentControlProperties]);
-                    var sDocumentEditingRestrictions = "readOnly";
-                    window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
-                    document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
-                    document.getElementById('divContractCreate').classList.add(displayNoneClass);
-                }
-            })
-            .catch(error => {
-                // Handle any errors
-                console.error('Error:', error);
+        try {
+            var randomNumber = Math.floor(Math.random() * (1000000 - 1 + 1)) + 1;
+            var commentID = Date.now() + '-' + randomNumber;
+            var form = document.getElementById('clauseForm');
+            var data = JSON.stringify({
+                contractId: documentID,
+                contractSection: form.elements['contractSection'].value,
+                contractDescription: form.elements['contractDescription'].value,
+                assignedTeamAndUserDetails: [...selectedInvitedTeams, ...selectedInvitedUsers],
+                commentId: commentID
             });
+            const createClauseSectionUrl = apiBaseUrl + '/contractSection/createNewContractSection';
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + authToken
+            };
+            const requestOptions = {
+                method: 'POST',
+                headers: headers,
+                body: data
+            };
+            fetch(createClauseSectionUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data
+                    document.getElementById("clauseForm").reset();
+                    const responseData = data;
+                    if (responseData && responseData.status == true && responseData.code == 200) {
+                        var sDocumentEditingRestrictions = "none";
+                        window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+                        var nContentControlType = 2;
+                        color = {
+                            R: 104,
+                            G: 215,
+                            B: 248,
+                        };
+                        nContentControlProperties = {
+                            "Id": randomNumber,
+                            "Tag": commentID,
+                            "Lock": 1,
+                            "Color": color,
+                            "InternalId": randomNumber.toString()
+                        };
+                        console.log('nContentControlProperties', nContentControlProperties);
+                        window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, nContentControlProperties]);
+                        var sDocumentEditingRestrictions = "readOnly";
+                        window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+                        document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
+                        document.getElementById('divContractCreate').classList.add(displayNoneClass);
+                    }
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error('Error:', error);
+                });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // throw error; // You can re-throw the error or handle it here
+        }
     }
 
-    /**====================== API Function End ======================*/
+    /**
+     * @param postData
+     * @param socket
+     * @returns {Promise<void>}
+     */
+    async function addContractSectionMessage(postData, socket) {
+        try {
+            var data = JSON.stringify(postData);
+            const addContractSectionMessageUrl = apiBaseUrl + '/contractSection/addContractSectionMessage';
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + authToken
+            };
+            const requestOptions = {
+                method: 'POST',
+                headers: headers,
+                body: data
+            };
+            fetch(addContractSectionMessageUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data
+                    document.getElementById("clauseForm").reset();
+                    const responseData = data;
+                    console.log(responseData);
+                    if (responseData && responseData.status == true && responseData.code == 200) {
+                        socket.emit('contract_section_message', postData);
 
+                        const myTextarea = document.getElementById("messageInput");
+                        myTextarea.value = "";
 
-    // /********************* Plugin Init - End CM *********************/ //
+                        let html = '';
+                        html += '<div class="message-wrapper reverse">\n' +
+                            '   <div class="profile-picture">\n' +
+                            '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                            '      <p class="name">' + postData.actionperformedbyUser + '</p>\n' +
+                            '      <img src="' + (postData.actionperformedbyUserImage ? postData.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                            '   </div>\n' +
+                            '   <div class="message-content">\n' +
+                            '      <div class="message">' + postData.message +
+                            '      </div>\n' +
+                            '   </div>\n' +
+                            '</div>\n';
+
+                        var contentDiv = document.getElementById("chatArea");
+                        var newElement = document.createElement("div");
+                        newElement.innerHTML = html;
+                        contentDiv.appendChild(newElement);
+
+                        const myDiv = document.getElementById("chatBodyID");
+                        const scrollToOptions = {
+                            top: myDiv.scrollHeight,
+                            behavior: 'smooth'
+                        };
+                        myDiv.scrollTo(scrollToOptions);
+
+                        return true;
+                    }
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error('Error:', error);
+                });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    /**
+     * @param messageType
+     * @returns {Promise<void>}
+     */
+    async function getContractSectionMessageList(messageType = 'our') {
+        try {
+            let getContractSectionMessageListUrl = apiBaseUrl + '/contractSection/getContractSectionMessageList/' + selectedThreadID + '/' + messageType;
+            let queryParam = [];
+            // Set sortby created time
+            queryParam.push('sort[createdAt]=-1');
+            // Set pageSize
+            queryParam.push('page=' + chatNextPage);
+            // Set recordLimit
+            queryParam.push('limit=' + chatRecordLimit);
+            // Set queryparams
+            getContractSectionMessageListUrl += '?' + queryParam.join('&');
+            console.log('getContractSectionMessageListUrl', getContractSectionMessageListUrl);
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + authToken
+            };
+            const requestOptions = {
+                method: 'GET',
+                headers: headers,
+            };
+            fetch(getContractSectionMessageListUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data
+                    const responseData = data;
+                    if (responseData && responseData.status == true && responseData.code == 200 && responseData.data) {
+                        console.log('responseData', responseData);
+                        if (responseData.data.data.length > 0) {
+                            let result;
+                            if (chatNextPage == 1) {
+                                result = responseData?.data?.data.reverse();
+                            } else {
+                                result = responseData?.data?.data;
+                            }
+                            let setLastHeight = document.getElementById('chatArea').scrollHeight;
+                            result.forEach((chatMessage) => {
+                                let html = '';
+                                if (chatMessage.from == loggedInUserDetails._id) {
+                                    console.log('My Message', chatMessage.message);
+                                    html += '<div class="message-wrapper reverse">\n' +
+                                        '   <div class="profile-picture">\n' +
+                                        '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
+                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
+                                        '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                                        '   </div>\n' +
+                                        '   <div class="message-content">\n' +
+                                        '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
+                                        '      </div>\n' +
+                                        '   </div>\n' +
+                                        '</div>\n';
+                                } else {
+                                    console.log('Oppsite Message', chatMessage.message);
+                                    html += '<div class="message-wrapper grey-color">\n' +
+                                        '   <div class="profile-picture">\n' +
+                                        '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
+                                        '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
+                                        '   </div>\n' +
+                                        '   <div class="message-content">\n' +
+                                        '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
+                                        '      </div>\n' +
+                                        '   </div>\n' +
+                                        '</div>\n';
+                                }
+
+                                if (chatNextPage == 1) {
+                                    var contentDiv = document.getElementById("chatArea");
+                                    var newElement = document.createElement("div");
+                                    newElement.innerHTML = html;
+                                    contentDiv.appendChild(newElement);
+                                    // targetDiv.before(html);
+                                } else {
+                                    var contentDiv = document.getElementById("chatArea");
+                                    var newElement = document.createElement("div");
+                                    newElement.innerHTML = html;
+                                    contentDiv.insertBefore(newElement, contentDiv.firstChild);
+                                }
+                            })
+                            const myDiv = document.getElementById("chatBodyID");
+                            const scrollToOptions = {
+                                top: myDiv.scrollHeight,
+                                behavior: 'smooth'
+                            };
+                            if (chatNextPage == 1) {
+                                myDiv.scrollTo(scrollToOptions);
+                            } else {
+                                document.getElementById('chatBodyID').scrollTop = document.getElementById('chatArea').scrollHeight - setLastHeight;
+                            }
+                            chatHasNextPage = responseData.data.hasNextPage;
+                            chatNextPage = responseData.data.nextPage;
+                        }
+                    }
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error('Error:', error);
+                });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+    /**================================ API Function End ==================================*/
 
 })(window, undefined);

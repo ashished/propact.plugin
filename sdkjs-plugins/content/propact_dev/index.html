@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="styles/style.css">
     <script src="vendor/jQuery-2.2.2-min/jquery-v2.2.2-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script type="text/javascript" src="scripts/code.js"></script>
 </head>
 <body>
@@ -344,14 +345,14 @@
     </div>
     <div class="contract-sameside-chat d-none" id="divContractSameSideChat">
         <div class="meeting-screen conversion-history">
-            <div class="chat-create-header">
+            <div class="chat-create-header" id="chatHeader">
                 <div class="conversation-left">
                     <span class="user-icon">
                         <img src="images/profile-image.png" alt="">
                     </span>
                     <div class="user-inner">
-                        <span class="user-name crop-text" id="userProfileNameA">Jane Nelson</span>
-                        <p class="crop-text" id="userProfileroleA">Lawyer</p>
+                        <span class="user-name crop-text" id="userProfileNameA">-</span>
+                        <p class="crop-text" id="userProfileroleA">-</p>
                     </div>
                 </div>
                 <div class="conversation-right">
@@ -437,63 +438,20 @@
                     </a>
                 </div>
             </div>
-            <div class="chat-body">
-                <div class="chat-area">
-                    <div class="top-bar">
-                        <span>Today</span>
-                    </div>
-                    <div class="message-wrapper reverse">
-                        <div class="profile-picture">
-                            <p class="last-seen">10:37 am</p>
-                            <p class="name">Jane Nelson</p>
-                            <img src="images/profile-image.png" alt="pp">
-                        </div>
-                        <div class="message-content">
-                            <div class="message">Hi guys <br>Please review this clause and let me <br>know your
-                                thoughts. <br>I’m concerned about the “terms and <br>conditions
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message-wrapper grey-color">
-                        <div class="profile-picture">
-                            <img src="images/linkedin-sales3.png" alt="pp">
-                            <p class="name">Bob Miller</p>
-                            <p class="last-seen">11:00 am</p>
-                        </div>
-                        <div class="message-content">
-                            <div class="message">Hi <b>@Jane Nelson</b> <br>Yep, that's concerning for us too. <br>Nothing
-                                will be "reasonably <br>acceptable" to these guys. We need <br>to make it cleaner than
-                                that.
-                            </div>
-                            <a href="#" class="delete-icon"><img src="images/delete-icon.svg" alt=""></a>
-                        </div>
-                        <div class="request-row">
-                            <div class="request-content">
-                                <h4>Sent a position confirmation <br> request</h4>
-                                <div class="content-message">
-                                    Proposal Change to sub (b) so <br> assignment terms must be <br> approved by Buyer
-                                    in 14 days or <br> they will be deemed to be <br> approved.
-                                </div>
-                            </div>
-                            <div class="request-btn">
-                                <button class="btn btn-primary">Approve</button>
-                                <button class="btn reject-btn">Reject</button>
-                            </div>
-                        </div>
-                    </div>
+            <div class="chat-body" id="chatBodyID">
+                <div class="chat-area" id="chatArea">
                 </div>
             </div>
             <div class="chat-create-footer">
+                <span id="typingSpan"></span>
                 <div class="form-group">
-                    <textarea type="textarea"
-                              placeholder="Thanks Bill and Bob. That makes sense. I will propose a change to sub (b) so assignment terms must be approved by Buyer in 14 days..."
-                              class="form-control"></textarea>
+                    <textarea type="textarea" id="messageInput" placeholder="Type message here" class="form-control"></textarea>
                 </div>
-                <div class="chat-footer-inner">
+                <div class="chat-footer-inner" id="chatFooterInner">
                     <button class="btn" id="btnGoToCounterpartyA">Go to counterparty</button>
                     <div class="send-btn">
-                        <button class="btn-primary attach"><img src="images/attach-icon.svg" alt=""></button>
-                        <button class="btn-primary"><img src="images/send-icon.svg" alt=""> Send</button>
+<!--                        <button class="btn-primary attach"><img src="images/attach-icon.svg" alt=""></button>-->
+                        <button class="btn-primary" id="btnSend"><img src="images/send-icon.svg" alt="">Send</button>
                     </div>
                 </div>
             </div>
