@@ -160,11 +160,10 @@
             messageConfirmationFor = 'Same Side';
             document.getElementById('chatArea').innerHTML = '';
             chatNextPage = 1;
+            console.log('Fn Called: btnGoToSameSideChat - getContractSectionMessageList');
             await getContractSectionMessageList('our');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
-            console.log('chatRoomName', chatRoomName);
             socket.emit('join_contract_section_chat_room', chatRoomName);
-            console.log('socket', socket);
             document.getElementById('chatHeader').classList.remove('counterparty');
             document.getElementById('chatFooterInner').classList.remove('justify-content-end');
             document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
@@ -177,6 +176,7 @@
             messageConfirmationFor = 'Opposite Side';
             document.getElementById('chatArea').innerHTML = '';
             chatNextPage = 1;
+            console.log('Fn Called: btnGoToCounterparty - getContractSectionMessageList');
             await getContractSectionMessageList('Counterparty');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
             console.log('chatRoomName', chatRoomName);
