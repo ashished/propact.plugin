@@ -357,8 +357,7 @@
         });
 
         document.getElementById('chatBodyID').onscroll = (e) => {
-            if (document.getElementById('chatBodyID')?.scrollTop  == 0 && chatNextPage) {
-                console.log('Scroll Fn Called');
+            if (document.getElementById('chatBodyID')?.scrollTop  == 0 && chatNextPage != 1 && chatHasNextPage) {
                 getContractSectionMessageList(withType == 'Our Team' ? 'our' : 'Counterparty');
             }
         };
