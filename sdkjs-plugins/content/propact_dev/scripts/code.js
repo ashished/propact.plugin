@@ -158,9 +158,9 @@
         varBtnGoToSameSideChat?.addEventListener('click', async function () {
             withType = 'Our Team';
             messageConfirmationFor = 'Same Side';
-            document.getElementById('chatArea').innerHTML = '';
             chatNextPage = 1;
-            console.log('Fn Called: btnGoToSameSideChat - getContractSectionMessageList');
+            document.getElementById('chatArea').innerHTML = '';
+            generalChatMessage = [];
             await getContractSectionMessageList('our');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
             socket.emit('join_contract_section_chat_room', chatRoomName);
@@ -175,9 +175,9 @@
         varBtnGoToCounterparty?.addEventListener('click', async function () {
             withType = 'Counterparty';
             messageConfirmationFor = 'Opposite Side';
-            document.getElementById('chatArea').innerHTML = '';
             chatNextPage = 1;
-            console.log('Fn Called: btnGoToCounterparty - getContractSectionMessageList');
+            document.getElementById('chatArea').innerHTML = '';
+            generalChatMessage = [];
             await getContractSectionMessageList('Counterparty');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
             console.log('chatRoomName', chatRoomName);
@@ -213,9 +213,9 @@
         varBtnGoToCounterpartyA.addEventListener('click', async function () {
             withType = 'Counterparty';
             messageConfirmationFor = 'Opposite Side';
-            document.getElementById('chatArea').innerHTML = '';
             chatNextPage = 1;
-            console.log('Fn Called: btnGoToCounterparty - getContractSectionMessageList');
+            document.getElementById('chatArea').innerHTML = '';
+            generalChatMessage = [];
             await getContractSectionMessageList('Counterparty');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
             console.log('chatRoomName', chatRoomName);
@@ -1262,7 +1262,6 @@
                         if (responseData.data.data.length > 0) {
                             let result;
                             if (chatNextPage == 1) {
-                                generalChatMessage = [];
                                 result = responseData?.data?.data.reverse();
                             } else {
                                 result = responseData?.data?.data;
