@@ -1265,6 +1265,12 @@
                                 generalChatMessage = [];
                                 document.getElementById('chatArea').innerHTML = '';
                                 result = responseData?.data?.data.reverse();
+                                const myDiv = document.getElementById("chatBodyID");
+                                const scrollToOptions = {
+                                    top: myDiv.scrollHeight,
+                                    behavior: 'smooth'
+                                };
+                                myDiv.scrollTo(scrollToOptions);
                             } else {
                                 result = responseData?.data?.data;
                             }
