@@ -1229,7 +1229,7 @@
             queryParam.push('limit=' + chatRecordLimit);
             // Set queryparams
             getContractSectionMessageListUrl += '?' + queryParam.join('&');
-            console.log('getContractSectionMessageListUrl', getContractSectionMessageListUrl);
+            console.log(messageType, getContractSectionMessageListUrl)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + authToken
