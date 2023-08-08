@@ -165,6 +165,7 @@
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
             socket.emit('join_contract_section_chat_room', chatRoomName);
             document.getElementById('chatHeader').classList.remove('counterparty');
+            document.getElementById('btnGoToCounterpartyA').classList.remove(displayNoneClass);
             document.getElementById('chatFooterInner').classList.remove('justify-content-end');
             document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
@@ -204,8 +205,21 @@
 
         const varBtnGoToConversionHistory = document.getElementById('btnGoToConversionHistory');
         varBtnGoToConversionHistory.addEventListener('click', function () {
-            document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
-            document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
+            withType = 'Counterparty';
+            messageConfirmationFor = 'Opposite Side';
+            document.getElementById('chatArea').innerHTML = '';
+            chatNextPage = 1;
+            console.log('Fn Called: btnGoToCounterparty - getContractSectionMessageList');
+            await getContractSectionMessageList('Counterparty');
+            let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
+            console.log('chatRoomName', chatRoomName);
+            socket.emit('join_contract_section_chat_room', chatRoomName);
+            console.log('socket', socket);
+            document.getElementById('chatHeader').classList.add('counterparty');
+            document.getElementById('btnGoToCounterpartyA').classList.add(displayNoneClass);
+            document.getElementById('chatFooterInner').classList.add('justify-content-end');
+            document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
+            document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
 
         const varBtnGoToCounterpartyA = document.getElementById('btnGoToCounterpartyA');
