@@ -20,6 +20,7 @@
 (function (window, undefined) {
     // Declare variables
     var flagInit = false;
+    var flagSocketInit = false;
     var fClickLabel = false;
     var fClickBtnCur = false;
     var displayNoneClass = "d-none";
@@ -88,9 +89,6 @@
          * @desc Get the open contract and user details
          */
         if (documentID && authToken && !flagInit) {
-            let socket = io.connect(baseUrl,
-                {auth: {authToken}}
-            );
             console.log('socket', socket);
             getOpenContractUserDetails();
         }
@@ -352,7 +350,11 @@
 
         /**============================== Socket Function Start ===============================*/
         /** Socket Emit: user typing on contract thread */
-        if (socket) {
+
+        if (!flagSocketInit) {
+            let socket = io.connect(baseUrl,
+                {auth: {authToken}}
+            );
             function user_is_typing_contract_section(socket, data) {
                 socket.emit('user_is_typing_contract_section', data);
             }
@@ -492,7 +494,10 @@
             socket.on('error', (error) => {
                 console.error('Socket Error:', error);
             });
+            flagSocketInit = true;
         }
+
+
         /**============================== Socket Function End =================================*/
     };
     /**================================== Plugin Init End =================================*/
