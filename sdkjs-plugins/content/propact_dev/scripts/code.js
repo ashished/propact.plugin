@@ -398,7 +398,7 @@
                     window.Asc.plugin.executeMethod("SelectContentControl", [tagLists[selectedTag].Id]);
                     fClickBtnCur = false;
                 } else if (!($('.div-selected').length && $('.div-selected')[0].id === tagLists[selectedTag].Id) && tagLists[selectedTag].Id) {
-                    if (document.getElementById(tagLists[selectedTag].Id) && selectedCommentThereadID !== '') {
+                    if (document.getElementById(tagLists[selectedTag].Id)) {
                         selectedCommentThereadID = tagLists[selectedTag].Tag;
 
                         let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
