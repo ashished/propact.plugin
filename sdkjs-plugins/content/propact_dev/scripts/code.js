@@ -153,6 +153,7 @@
         varBtnRedirectClauseListsA.addEventListener('click', function () {
             selectedCommentThereadID = '';
             $('.div-selected').removeClass('div-selected');
+            getContractSectionList();
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
@@ -233,6 +234,7 @@
         varBtnRedirectClauseListsB.addEventListener('click', function () {
             selectedCommentThereadID = '';
             $('.div-selected').removeClass('div-selected');
+            getContractSectionList();
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
             document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
         });
@@ -944,7 +946,7 @@
                 const responseData = data;
                 if (responseData && responseData.data) {
                     const resData = responseData.data;
-                    // document.getElementById('contractListItemsDiv').innerHTML = '';
+                    document.getElementById('contractListItemsDiv').innerHTML = '';
                     if (resData.data.length > 0) {
                         clauseHasNextPage = resData.hasNextPage;
                         clauseNextPage = resData.nextPage;
