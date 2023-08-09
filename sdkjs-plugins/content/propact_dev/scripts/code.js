@@ -1180,8 +1180,9 @@
                         window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, nContentControlProperties]);
                         var sDocumentEditingRestrictions = "readOnly";
                         window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
-                        document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
+                        document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
                         document.getElementById('divContractCreate').classList.add(displayNoneClass);
+                        document.getElementById('divContractLists').classList.remove(displayNoneClass);
                     }
                 })
                 .catch(error => {
