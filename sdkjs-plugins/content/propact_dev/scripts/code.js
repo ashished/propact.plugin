@@ -405,8 +405,6 @@
                         socket.emit('join_contract_section_chat_room', chatRoomName);
 
                         $('.div-selected').removeClass('div-selected');
-                        var myDiv = document.getElementById('cluaseDetails');
-                        myDiv.textContent = selectedCommentThereadID;
                         $('#contractListItemsDiv #' + tagLists[selectedTag].Id).addClass('div-selected');
                     } else {
                         selectedCommentThereadID = '';
