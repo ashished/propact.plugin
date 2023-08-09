@@ -346,6 +346,7 @@
                 "status": 'send',
                 "actionperformedbyUser": loggedInUserDetails.firstName + " " + loggedInUserDetails.lastName,
                 "actionperformedbyUserImage": loggedInUserDetails.imageUrl,
+                "actionperformedbyUserRole": loggedInUserDetails.role,
                 "messageConfirmationFor": messageConfirmationFor,
                 "chatRoomName": withType == 'Our Team' ? 'user_' + selectedCommentThereadID : 'counter_' + selectedCommentThereadID,
                 "messageNumber": 0
@@ -696,7 +697,7 @@
                     htmlHistory += '<div class="message-wrapper light-gold-color">\n' +
                         '   <div class="profile-picture">\n' +
                         '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                        '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                        '      <p class="name">' + data.actionperformedbyUser + '&nbsp;<small>(' + (data && data.actionperformedbyUserRole == 'Counterparty' ? 'Counterparty' : 'Same side') + ')</small>' + '</p>\n' +
                         '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
                         '   </div>\n' +
                         '   <div class="message-content">\n' +
@@ -707,7 +708,7 @@
                 } else {
                     htmlHistory += '<div class="message-wrapper reverse">\n' +
                         '   <div class="profile-picture">\n' +
-                        '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                        '      <p class="name">' + data.actionperformedbyUser + '&nbsp;<small>(' + (data && data.actionperformedbyUserRole == 'Counterparty' ? 'Counterparty' : 'Same side') + ')</small>' + '</p>\n' +
                         '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
                         '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
                         '   </div>\n' +
@@ -1428,7 +1429,7 @@
                                     html += '<div class="message-wrapper reverse">\n' +
                                         '   <div class="profile-picture">\n' +
                                         '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
-                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
+                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '&nbsp;<small>(' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.role == 'Counterparty' ? 'Counterparty' : 'Same side') + ')</small>' + '</p>\n' +
                                         '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
                                         '   </div>\n' +
                                         '   <div class="message-content">\n' +
@@ -1440,7 +1441,7 @@
                                     html += '<div class="message-wrapper light-gold-color">\n' +
                                         '   <div class="profile-picture">\n' +
                                         '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
+                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '&nbsp;<small>(' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.role == 'Counterparty' ? 'Counterparty' : 'Same side') + ')</small>' + '</p>\n' +
                                         '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
                                         '   </div>\n' +
                                         '   <div class="message-content">\n' +
