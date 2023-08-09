@@ -406,9 +406,6 @@
 
                         $('.div-selected').removeClass('div-selected');
                         $('#contractListItemsDiv #' + tagLists[selectedTag].Id).addClass('div-selected');
-                    } else {
-                        selectedCommentThereadID = '';
-                        $('.div-selected').removeClass('div-selected');
                     }
                 } else if (!returnValue) {
                     selectedCommentThereadID = '';
