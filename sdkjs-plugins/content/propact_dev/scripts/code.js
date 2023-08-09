@@ -1009,6 +1009,9 @@
                                 '</div>';
                         });
                         document.getElementById('contractListItemsDiv').innerHTML += html;
+                    } else {
+                        let norecordhtml = '<p class="nodata-info">No clause available</p>';
+                        document.getElementById('contractListItemsDiv').innerHTML = norecordhtml;
                     }
                 }
             })

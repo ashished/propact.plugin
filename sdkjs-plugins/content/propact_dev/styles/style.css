@@ -221,4 +221,5 @@ img {max-width: 100%;vertical-align: middle;border-style: none; height: auto;}
 div.div-selected { background: #d5d5d5 !important; }
 .chat-body .chat-area .message-wrapper.reverse .message {direction: ltr;}
 .small, small { font-size: 0.75em; }
-.crop-text { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:103px; }​
+.crop-text { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:103px; }
+p.nodata-info { text-align: center; font-size: 12px; color: #282756; }
