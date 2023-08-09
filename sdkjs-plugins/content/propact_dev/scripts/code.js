@@ -54,6 +54,9 @@
     var chatRecordLimit = 10;
     var chatNextPage = 1;
     var chatHasNextPage = true;
+    var chatHistoryRecordLimit = 10;
+    var chatHistoryNextPage = 1;
+    var chatHistoryHasNextPage = true;
     let socket = '';
 
 
