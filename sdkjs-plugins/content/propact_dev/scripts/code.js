@@ -101,17 +101,17 @@
             document.getElementById('divInviteCounterparty').classList.add(displayNoneClass);
             document.getElementById('divInviteCounterpartyForm').classList.remove(displayNoneClass);
         });
-// Invite counterparty screen
+        // Invite counterparty screen
 
-// Invite counterparty Form screen
+        // Invite counterparty Form screen
         const varBtnRedirectInviteCounterpartyCancel = document.getElementById('btnRedirectInviteCounterpartyCancel');
         varBtnRedirectInviteCounterpartyCancel.addEventListener('click', function () {
             document.getElementById('divInviteCounterparty').classList.remove(displayNoneClass);
             document.getElementById('divInviteCounterpartyForm').classList.add(displayNoneClass);
         });
-// Invite counterparty Form screen
+        // Invite counterparty Form screen
 
-// Invite counterparty Pending screen
+        // Invite counterparty Pending screen
         const varBtnResendVerification = document.getElementById('btnResendVerification');
         varBtnResendVerification.addEventListener('click', function () {
             resendCounterpartyInvitation();
@@ -121,9 +121,9 @@
         varBtnCancelInvitation.addEventListener('click', function () {
             cancelInvitation();
         });
-// Invite counterparty Pending screen
+        // Invite counterparty Pending screen
 
-// Contract clause lists screen
+        // Contract clause lists screen
         const varBtnCreateClause = document.getElementById('btnCreateClause');
         varBtnCreateClause.addEventListener('click', function () {
             if (text) {
@@ -132,9 +132,9 @@
                 toggleInviteUsersDivShow = true;
             }
         });
-// Contract clause lists screen
+        // Contract clause lists screen
 
-// Create contract clause screen
+        // Create contract clause screen
         const varBtnContractCreateClose = document.getElementById('btnContractCreateClose');
         varBtnContractCreateClose.addEventListener('click', function () {
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
@@ -146,12 +146,13 @@
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
             document.getElementById('divContractCreate').classList.add(displayNoneClass);
         });
-// Create contract clause screen
+        // Create contract clause screen
 
-// Contract chat history screen
+        // Contract chat history screen
         const varBtnRedirectClauseListsA = document.getElementById('btnRedirectClauseListsA');
         varBtnRedirectClauseListsA.addEventListener('click', function () {
             selectedCommentThereadID = '';
+            $('.div-selected').removeClass('div-selected');
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
@@ -189,9 +190,9 @@
             document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
-// Contract chat history screen
+        // Contract chat history screen
 
-// Contract sameside chat screen
+        // Contract sameside chat screen
         const varBtnmessageInput = document.getElementById('messageInput');
         varBtnmessageInput?.addEventListener('keydown', function () {
             var data = {
@@ -231,12 +232,13 @@
         const varBtnRedirectClauseListsB = document.getElementById('btnRedirectClauseListsB');
         varBtnRedirectClauseListsB.addEventListener('click', function () {
             selectedCommentThereadID = '';
+            $('.div-selected').removeClass('div-selected');
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
             document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
         });
-// Contract sameside chat screen
+        // Contract sameside chat screen
 
-// Toggle inviteuser tabs view
+        // Toggle inviteuser tabs view
         document.getElementById('inviteUsersInput').addEventListener('click', function () {
             if (toggleInviteUsersDivShow) {
                 document.getElementById('inviteUsersBox').classList.remove(displayNoneClass);
@@ -246,7 +248,7 @@
             toggleInviteUsersDivShow = !toggleInviteUsersDivShow;
         });
 
-// Clause Lazyload functionality
+        // Clause Lazyload functionality
         document.getElementById('contractListItemsDiv').onscroll = (e) => {
             if (document.getElementById('contractListItemsDiv').scrollTop + document.getElementById('contractListItemsDiv').offsetHeight >= document.getElementById('contractListItemsDiv').scrollHeight) {
                 if (clauseHasNextPage) {
@@ -255,7 +257,7 @@
             }
         }
 
-// Clause listing screen - Search input
+        // Clause listing screen - Search input
         document.getElementById('inputSearchbox').addEventListener('keyup', function (event) {
             clearTimeout(searchTimeout); // Clear any existing timeout
 
@@ -295,7 +297,7 @@
         $(document).on('click', '#inviteteams', function () {
             $('.team-chkbox').prop('checked', this.checked);
             updateInviteTeamCheckbox();
-        })
+        });
 
         $(document).on('click', '.team-chkbox', function () {
             var allChecked = $('.team-chkbox:checked').length === $('.team-chkbox').length;
