@@ -1177,6 +1177,7 @@
                             "Color": color,
                             "InternalId": randomNumber.toString()
                         };
+                        tagLists.push(nContentControlProperties);
                         window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, nContentControlProperties]);
                         var sDocumentEditingRestrictions = "readOnly";
                         window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
