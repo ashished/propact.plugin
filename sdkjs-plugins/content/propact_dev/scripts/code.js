@@ -351,13 +351,13 @@
         });
 
         document.getElementById('chatBodyID').onscroll = (e) => {
-            if (document.getElementById('chatBodyID')?.scrollTop == 0 && chatNextPage != 1 && chatHasNextPage) {
+            if (document.getElementById('chatBodyID')?.scrollTop == 0 && chatHasNextPage && chatNextPage != 1) {
                 getContractSectionMessageList(withType == 'Our Team' ? 'our' : 'Counterparty');
             }
         };
 
         document.getElementById('chatHistoryBodyID').onscroll = (e) => {
-            if (document.getElementById('chatHistoryBodyID')?.scrollTop == 0 && chatHistoryNextPage != 1 && chatHistoryNextPage) {
+            if (document.getElementById('chatHistoryBodyID')?.scrollTop == 0 && chatHistoryNextPage && chatHistoryNextPage != 1) {
                 getContractSectionMessageHistory();
             }
         };
