@@ -44,7 +44,6 @@
     let tagLists = [];
     var selectedCommentThereadID = '';
     var selectedThreadID = '';
-    var developmentMode = true;
     var loggedInUserDetails;
     let typingTimeout;
     let tyingUserArray = [];
@@ -99,17 +98,17 @@
             document.getElementById('divInviteCounterparty').classList.add(displayNoneClass);
             document.getElementById('divInviteCounterpartyForm').classList.remove(displayNoneClass);
         });
-        // Invite counterparty screen
+// Invite counterparty screen
 
-        // Invite counterparty Form screen
+// Invite counterparty Form screen
         const varBtnRedirectInviteCounterpartyCancel = document.getElementById('btnRedirectInviteCounterpartyCancel');
         varBtnRedirectInviteCounterpartyCancel.addEventListener('click', function () {
             document.getElementById('divInviteCounterparty').classList.remove(displayNoneClass);
             document.getElementById('divInviteCounterpartyForm').classList.add(displayNoneClass);
         });
-        // Invite counterparty Form screen
+// Invite counterparty Form screen
 
-        // Invite counterparty Pending screen
+// Invite counterparty Pending screen
         const varBtnResendVerification = document.getElementById('btnResendVerification');
         varBtnResendVerification.addEventListener('click', function () {
             resendCounterpartyInvitation();
@@ -119,9 +118,9 @@
         varBtnCancelInvitation.addEventListener('click', function () {
             cancelInvitation();
         });
-        // Invite counterparty Pending screen
+// Invite counterparty Pending screen
 
-        // Contract clause lists screen
+// Contract clause lists screen
         const varBtnCreateClause = document.getElementById('btnCreateClause');
         varBtnCreateClause.addEventListener('click', function () {
             if (text) {
@@ -130,9 +129,9 @@
                 toggleInviteUsersDivShow = true;
             }
         });
-        // Contract clause lists screen
+// Contract clause lists screen
 
-        // Create contract clause screen
+// Create contract clause screen
         const varBtnContractCreateClose = document.getElementById('btnContractCreateClose');
         varBtnContractCreateClose.addEventListener('click', function () {
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
@@ -144,9 +143,9 @@
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
             document.getElementById('divContractCreate').classList.add(displayNoneClass);
         });
-        // Create contract clause screen
+// Create contract clause screen
 
-        // Contract chat history screen
+// Contract chat history screen
         const varBtnRedirectClauseListsA = document.getElementById('btnRedirectClauseListsA');
         varBtnRedirectClauseListsA.addEventListener('click', function () {
             selectedCommentThereadID = '';
@@ -160,7 +159,7 @@
             messageConfirmationFor = 'Same Side';
             document.getElementById('chatArea').innerHTML = '';
             chatNextPage = 1;
-            console.log('Fn Called: btnGoToSameSideChat - getContractSectionMessageList');
+            chatHasNextPage = true;
             await getContractSectionMessageList('our');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
             socket.emit('join_contract_section_chat_room', chatRoomName);
@@ -177,21 +176,19 @@
             messageConfirmationFor = 'Opposite Side';
             document.getElementById('chatArea').innerHTML = '';
             chatNextPage = 1;
-            console.log('Fn Called: btnGoToCounterparty - getContractSectionMessageList');
+            chatHasNextPage = true;
             await getContractSectionMessageList('Counterparty');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
-            console.log('chatRoomName', chatRoomName);
             socket.emit('join_contract_section_chat_room', chatRoomName);
-            console.log('socket', socket);
             document.getElementById('chatHeader').classList.add('counterparty');
             document.getElementById('btnGoToCounterpartyA').classList.add(displayNoneClass);
             document.getElementById('chatFooterInner').classList.add('justify-content-end');
             document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
-        // Contract chat history screen
+// Contract chat history screen
 
-        // Contract sameside chat screen
+// Contract sameside chat screen
         const varBtnmessageInput = document.getElementById('messageInput');
         varBtnmessageInput?.addEventListener('keydown', function () {
             var data = {
@@ -199,12 +196,14 @@
                 userName: loggedInUserDetails.firstName,
                 with: withType
             }
-            console.log('data', data);
             user_is_typing_contract_section(socket, data);
         });
 
         const varBtnGoToConversionHistory = document.getElementById('btnGoToConversionHistory');
         varBtnGoToConversionHistory.addEventListener('click', function () {
+            chatHistoryNextPage = 1;
+            chatHistoryHasNextPage = true;
+            getContractSectionMessageHistory();
             document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
         });
@@ -215,12 +214,10 @@
             messageConfirmationFor = 'Opposite Side';
             document.getElementById('chatArea').innerHTML = '';
             chatNextPage = 1;
-            console.log('Fn Called: btnGoToCounterparty - getContractSectionMessageList');
+            chatHasNextPage = true;
             await getContractSectionMessageList('Counterparty');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
-            console.log('chatRoomName', chatRoomName);
             socket.emit('join_contract_section_chat_room', chatRoomName);
-            console.log('socket', socket);
             document.getElementById('chatHeader').classList.add('counterparty');
             document.getElementById('btnGoToCounterpartyA').classList.add(displayNoneClass);
             document.getElementById('chatFooterInner').classList.add('justify-content-end');
@@ -234,9 +231,9 @@
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
             document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
         });
-        // Contract sameside chat screen
+// Contract sameside chat screen
 
-        // Toggle inviteuser tabs view
+// Toggle inviteuser tabs view
         document.getElementById('inviteUsersInput').addEventListener('click', function () {
             if (toggleInviteUsersDivShow) {
                 document.getElementById('inviteUsersBox').classList.remove(displayNoneClass);
@@ -246,18 +243,16 @@
             toggleInviteUsersDivShow = !toggleInviteUsersDivShow;
         });
 
-        // Clause Lazyload functionality
+// Clause Lazyload functionality
         document.getElementById('contractListItemsDiv').onscroll = (e) => {
             if (document.getElementById('contractListItemsDiv').scrollTop + document.getElementById('contractListItemsDiv').offsetHeight >= document.getElementById('contractListItemsDiv').scrollHeight) {
                 if (clauseHasNextPage) {
                     getContractSectionList();
-                    console.log(clauseNextPage, clauseHasNextPage);
                 }
-                console.log("End");
             }
         }
 
-        // Clause listing screen - Search input
+// Clause listing screen - Search input
         document.getElementById('inputSearchbox').addEventListener('keyup', function (event) {
             clearTimeout(searchTimeout); // Clear any existing timeout
 
@@ -323,8 +318,11 @@
             if (tagExists > -1) {
                 selectedCommentThereadID = tagLists[tagExists].Tag;
                 selectedThreadID = $(this).data('id');
-                var myDiv = document.getElementById('cluaseDetails');
-                myDiv.textContent = selectedCommentThereadID;
+                chatHistoryNextPage = 1;
+                chatHistoryHasNextPage = true;
+                getContractSectionMessageHistory();
+                let chatRoomName = 'conversion_history_' + selectedCommentThereadID;
+                socket.emit('join_contract_section_chat_room', chatRoomName);
                 document.getElementById('divContractLists').classList.add(displayNoneClass);
                 document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
                 // window.Asc.plugin.executeMethod("SelectContentControl", [tagLists[tagExists].InternalId]);
@@ -332,7 +330,6 @@
         });
 
         $(document).on('click', '#btnSend', async function () {
-            console.log('t', $('#messageInput').val());
             chat_message = $('#messageInput').val();
             const addNewContractMessageDetail = {
                 "contractId": documentID,
@@ -348,17 +345,20 @@
                 "actionperformedbyUserImage": loggedInUserDetails.imageUrl,
                 "messageConfirmationFor": messageConfirmationFor,
                 "chatRoomName": withType == 'Our Team' ? 'user_' + selectedCommentThereadID : 'counter_' + selectedCommentThereadID,
-                // "messageNumber": withType == 'Our Team' ? (items.length < 1 ? 0 : parseInt(localStorage.getItem("userMessageListNumber"))) : (counterPartyitems.length < 1 ? 0 : parseInt(localStorage.getItem("counterMessageListNumber")))
                 "messageNumber": 0
             }
-            console.log('details', addNewContractMessageDetail);
             await addContractSectionMessage(addNewContractMessageDetail, socket);
-            console.log(1);
         });
 
         document.getElementById('chatBodyID').onscroll = (e) => {
-            if (document.getElementById('chatBodyID')?.scrollTop  == 0 && chatNextPage != 1 && chatHasNextPage) {
+            if (document.getElementById('chatBodyID')?.scrollTop == 0 && chatNextPage != 1 && chatHasNextPage) {
                 getContractSectionMessageList(withType == 'Our Team' ? 'our' : 'Counterparty');
+            }
+        };
+
+        document.getElementById('chatHistoryBodyID').onscroll = (e) => {
+            if (document.getElementById('chatHistoryBodyID')?.scrollTop == 0 && chatHistoryNextPage != 1 && chatHistoryNextPage) {
+                getContractSectionMessageHistory();
             }
         };
     };
@@ -373,7 +373,6 @@
                 fBtnGetAll = false;
                 for (var i = 0; i < returnValue.length; i++) {
                     let tagExists = tagLists.findIndex((ele) => +ele.Id == +returnValue[i].Id);
-                    console.log('tagExists', tagExists);
                     if (tagExists < 0) {
                         tagLists.push(returnValue[i]);
                     }
@@ -382,7 +381,6 @@
                 // document.getElementById("divG").innerHTML = "";
                 for (var i = 0; i < returnValue.length; i++) {
                     let tagExists = tagLists.findIndex((ele) => +ele.Id == +returnValue[i].Id);
-                    console.log('tagExists', tagExists);
                     if (tagExists < 0) {
                         tagLists.push(returnValue[i]);
                     }
@@ -400,9 +398,7 @@
                         selectedCommentThereadID = tagLists[selectedTag].Tag;
 
                         let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
-                        console.log('chatRoomName', chatRoomName);
                         socket.emit('join_contract_section_chat_room', chatRoomName);
-                        console.log('socket', socket);
 
                         $('.div-selected').removeClass('div-selected');
                         var myDiv = document.getElementById('cluaseDetails');
@@ -457,7 +453,6 @@
      * Update invite team checkbox
      */
     function updateInviteTeamCheckbox() {
-        console.log('selectedInvitedTeams', selectedInvitedTeams);
         $('.team-chkbox').each(function () {
             let isChecked = $(this).prop("checked");
             let dataID = $(this).parent().data('id');
@@ -474,7 +469,6 @@
                 }
             }
         })
-        console.log('selectedInvitedTeams', selectedInvitedTeams);
         updateInviteUsersPlacehoder();
     }
 
@@ -482,7 +476,6 @@
      * Update invite user checkbox
      */
     function updateInviteUserCheckbox() {
-        console.log('selectedInvitedUsers', selectedInvitedUsers);
         $('.user-chkbox').each(function () {
             let isChecked = $(this).prop("checked");
             let dataID = $(this).parent().data('id');
@@ -499,7 +492,6 @@
                 }
             }
         });
-        console.log('selectedInvitedUsers', selectedInvitedUsers);
         updateInviteUsersPlacehoder();
     }
 
@@ -554,6 +546,14 @@
         return formattedDate;
     }
 
+    socket = io.connect(baseUrl,
+        {auth: {authToken}}
+    );
+
+    function user_is_typing_contract_section(socket, data) {
+        socket.emit('user_is_typing_contract_section', data);
+    }
+
     function setupSocket() {
         /**============================== Socket Function Start ===============================*/
         /** Socket Emit: user typing on contract thread */
@@ -561,6 +561,7 @@
             socket = io.connect(baseUrl,
                 {auth: {authToken}}
             );
+
             function user_is_typing_contract_section(socket, data) {
                 socket.emit('user_is_typing_contract_section', data);
             }
@@ -649,14 +650,13 @@
                 var newElement = document.createElement("div");
                 newElement.innerHTML = html;
                 contentDiv.appendChild(newElement);
-            })
+            });
 
             /** Socket On: user message get for same side */
             socket.on('receive_counter_contract_section_message', data => {
-                console.log('receive_counter_contract_section_message', data);
                 let html = '';
                 if (data.from == loggedInUserDetails._id) {
-                    html += '<div class="message-wrapper reverse">\n' +
+                    html += '<div class="message-wrapper reverse ' + (data.with == "Counterparty" ? "light-gold-color" : "") + ' ">\n' +
                         '   <div class="profile-picture">\n' +
                         '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
                         '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
@@ -668,7 +668,7 @@
                         '   </div>\n' +
                         '</div>\n';
                 } else {
-                    html += '<div class="message-wrapper grey-color">\n' +
+                    html += '<div class="message-wrapper grey-color ' + (data.with == "Counterparty" ? "light-gold-color" : "") + ' ">\n' +
                         '   <div class="profile-picture">\n' +
                         '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
                         '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
@@ -684,7 +684,41 @@
                 var newElement = document.createElement("div");
                 newElement.innerHTML = html;
                 contentDiv.appendChild(newElement);
-            })
+            });
+
+            /** Socket On: user message get for conversion history */
+            socket.on('receive_conversion_history_message', data => {
+                let htmlHistory = '';
+                if (data.with == 'Counterparty') {
+                    htmlHistory += '<div class="message-wrapper light-gold-color">\n' +
+                        '   <div class="profile-picture">\n' +
+                        '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                        '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                        '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                        '   </div>\n' +
+                        '   <div class="message-content">\n' +
+                        '      <div class="message">' + data.message +
+                        '      </div>\n' +
+                        '   </div>\n' +
+                        '</div>\n';
+                } else {
+                    htmlHistory += '<div class="message-wrapper reverse">\n' +
+                        '   <div class="profile-picture">\n' +
+                        '      <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                        '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                        '      <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                        '   </div>\n' +
+                        '   <div class="message-content">\n' +
+                        '      <div class="message">' + data.message +
+                        '      </div>\n' +
+                        '   </div>\n' +
+                        '</div>\n';
+                }
+                var contentHistoryDiv = document.getElementById("chatHistoryArea");
+                var newHistoryElement = document.createElement("div");
+                newHistoryElement.innerHTML = htmlHistory;
+                contentHistoryDiv.appendChild(newHistoryElement);
+            });
 
             // Handle connection errors
             socket.on('connect_error', (error) => {
@@ -704,6 +738,7 @@
         }
         /**============================== Socket Function End =================================*/
     }
+
     /**============================== Utils Function End ==================================*/
 
     /**================================ API Function Start ================================*/
@@ -1042,7 +1077,6 @@
                 .then(response => response.json())
                 .then(data => {
                     // Handle the response data
-                    console.log(data);
                     const responseData = data;
                     if (responseData && responseData.status == true && responseData.code == 200) {
                         document.getElementById('divInviteCounterpartyPending').classList.add(displayNoneClass);
@@ -1078,7 +1112,6 @@
                 .then(response => response.json())
                 .then(data => {
                     // Handle the response data
-                    console.log(data);
                     const responseData = data;
                     if (responseData && responseData.status == true && responseData.code == 200) {
                         console.log(responseData.message);
@@ -1141,7 +1174,6 @@
                             "Color": color,
                             "InternalId": randomNumber.toString()
                         };
-                        console.log('nContentControlProperties', nContentControlProperties);
                         window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, nContentControlProperties]);
                         var sDocumentEditingRestrictions = "readOnly";
                         window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
@@ -1183,15 +1215,17 @@
                     // Handle the response data
                     document.getElementById("clauseForm").reset();
                     const responseData = data;
-                    console.log(responseData);
                     if (responseData && responseData.status == true && responseData.code == 200) {
                         socket.emit('contract_section_message', postData);
+                        let generalChatData = postData;
+                        generalChatData.chatRoomName = 'conversion_history_' + selectedCommentThereadID;
+                        socket.emit('conversion_history_message', generalChatData);
 
                         const myTextarea = document.getElementById("messageInput");
                         myTextarea.value = "";
 
                         let html = '';
-                        html += '<div class="message-wrapper reverse">\n' +
+                        html += '<div class="message-wrapper reverse ' + (postData.with == "Counterparty" ? "light-gold-color" : "") + ' ">\n' +
                             '   <div class="profile-picture">\n' +
                             '      <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
                             '      <p class="name">' + postData.actionperformedbyUser + '</p>\n' +
@@ -1243,7 +1277,6 @@
             queryParam.push('limit=' + chatRecordLimit);
             // Set queryparams
             getContractSectionMessageListUrl += '?' + queryParam.join('&');
-            console.log(messageType, getContractSectionMessageListUrl)
             const headers = {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + authToken
@@ -1258,7 +1291,6 @@
                     // Handle the response data
                     const responseData = data;
                     if (responseData && responseData.status == true && responseData.code == 200 && responseData.data) {
-                        console.log('responseData', responseData);
                         if (responseData.data.data.length > 0) {
                             let result;
                             if (chatNextPage == 1) {
@@ -1279,7 +1311,7 @@
                                 let html = '';
                                 if (generalChatMessage.findIndex((ele) => +ele._id == chatMessage._id) < 0) {
                                     if (chatMessage.from == loggedInUserDetails._id) {
-                                        html += '<div class="message-wrapper reverse">\n' +
+                                        html += '<div class="message-wrapper reverse ' + (messageType == "Counterparty" ? "light-gold-color" : "") + '">\n' +
                                             '   <div class="profile-picture">\n' +
                                             '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
                                             '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
@@ -1291,7 +1323,7 @@
                                             '   </div>\n' +
                                             '</div>\n';
                                     } else {
-                                        html += '<div class="message-wrapper grey-color">\n' +
+                                        html += '<div class="message-wrapper grey-color ' + (messageType == "Counterparty" ? "light-gold-color" : "") + '">\n' +
                                             '   <div class="profile-picture">\n' +
                                             '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
                                             '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
@@ -1342,6 +1374,117 @@
             console.error('Error fetching data:', error);
         }
     }
+
+    /**
+     * @returns {Promise<void>}
+     */
+    async function getContractSectionMessageHistory() {
+        try {
+            let getContractSectionMessageListUrl = apiBaseUrl + '/contractSection/getContractSectionMessageList/' + selectedThreadID + '/all';
+            let queryParam = [];
+            // Set sortby created time
+            queryParam.push('sort[createdAt]=-1');
+            // Set pageSize
+            queryParam.push('page=' + chatHistoryNextPage);
+            // Set recordLimit
+            queryParam.push('limit=' + chatHistoryRecordLimit);
+            // Set queryparams
+            getContractSectionMessageListUrl += '?' + queryParam.join('&');
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + authToken
+            };
+            const requestOptions = {
+                method: 'GET',
+                headers: headers,
+            };
+            fetch(getContractSectionMessageListUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data
+                    const responseData = data;
+                    if (responseData && responseData.status == true && responseData.code == 200 && responseData.data) {
+                        if (responseData.data.data.length > 0) {
+                            let result;
+                            if (chatHistoryNextPage == 1) {
+                                document.getElementById('chatHistoryArea').innerHTML = '';
+                                result = responseData?.data?.data.reverse();
+                                const myDiv = document.getElementById("chatHistoryBodyID");
+                                const scrollToOptions = {
+                                    top: myDiv.scrollHeight,
+                                    behavior: 'smooth'
+                                };
+                                myDiv.scrollTo(scrollToOptions);
+                            } else {
+                                result = responseData?.data?.data;
+                            }
+                            let setLastHeight = document.getElementById('chatHistoryArea').scrollHeight;
+                            result.forEach((chatMessage) => {
+                                let html = '';
+                                if (chatMessage.messageConfirmationFor == 'Same Side') {
+                                    html += '<div class="message-wrapper reverse">\n' +
+                                        '   <div class="profile-picture">\n' +
+                                        '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
+                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
+                                        '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                                        '   </div>\n' +
+                                        '   <div class="message-content">\n' +
+                                        '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
+                                        '      </div>\n' +
+                                        '   </div>\n' +
+                                        '</div>\n';
+                                } else {
+                                    html += '<div class="message-wrapper light-gold-color">\n' +
+                                        '   <div class="profile-picture">\n' +
+                                        '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
+                                        '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
+                                        '   </div>\n' +
+                                        '   <div class="message-content">\n' +
+                                        '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
+                                        '      </div>\n' +
+                                        '   </div>\n' +
+                                        '</div>\n';
+                                }
+                                if (chatHistoryNextPage == 1) {
+                                    var contentDiv = document.getElementById("chatHistoryArea");
+                                    var newElement = document.createElement("div");
+                                    newElement.innerHTML = html;
+                                    contentDiv.appendChild(newElement);
+                                    // targetDiv.before(html);
+                                } else {
+                                    var contentDiv = document.getElementById("chatHistoryArea");
+                                    var newElement = document.createElement("div");
+                                    newElement.innerHTML = html;
+                                    contentDiv.insertBefore(newElement, contentDiv.firstChild);
+                                }
+                            })
+                            const myDiv = document.getElementById("chatHistoryBodyID");
+                            const scrollToOptions = {
+                                top: myDiv.scrollHeight,
+                                behavior: 'smooth'
+                            };
+                            if (chatHistoryNextPage == 1) {
+                                myDiv.scrollTo(scrollToOptions);
+                            } else {
+                                document.getElementById('chatHistoryBodyID').scrollTop = document.getElementById('chatHistoryArea').scrollHeight - setLastHeight;
+                            }
+                            chatHistoryHasNextPage = responseData.data.hasNextPage;
+                            chatHistoryNextPage = responseData.data.nextPage;
+                        } else {
+                            document.getElementById('chatHistoryArea').innerHTML = '';
+                        }
+                    }
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error('Error:', error);
+                });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
     /**================================ API Function End ==================================*/
 
 })(window, undefined);

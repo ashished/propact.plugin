@@ -99,7 +99,7 @@ img {max-width: 100%;vertical-align: middle;border-style: none; height: auto;}
 .meeting-screen .chat-create-header { background: #79D7FA; width: 100%; margin: 0; padding: 17px 20px; display: flex; align-items: center; justify-content: space-between;}
 .meeting-screen .chat-create-header.counterparty { background: #FFBC81 !important; }
 .chat-create-header h3 { font-size: 14px; color: #282756; font-weight: 600; margin: 0; padding: 0; line-height: 22px;}
-.chat-body { overflow: auto; width: 100%; float: left; margin: 0; padding: 12px 20px 20px; height:calc(100% - 137px); overflow-y: auto; overflow-x: hidden;}
+.chat-body { overflow: auto; width: 100%; float: left; margin: 0; padding: 12px 20px 20px; height:calc(100vh - 137px); overflow-y: auto; overflow-x: hidden;}
 .chat-body .chat-area { width: 100%; margin: 0; padding: 0; float: left;}
 .chat-body .chat-area .message-wrapper { width: 100%; float: left; margin: 0 0 20px 0; padding: 0;}
 .chat-body .chat-area .message-wrapper.reverse {direction: rtl;}

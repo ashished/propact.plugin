@@ -217,122 +217,9 @@
                     <img src="images/close.svg" alt="Close Icon">
                 </a>
             </div>
-            <div class="chat-body">
-                <div class="chat-area">
-                    <div class="top-bar" id="cluaseDetails">
+            <div class="chat-body" id="chatHistoryBodyID">
+                <div class="chat-area" id="chatHistoryArea">
 
-                    </div>
-                    <div class="top-bar">
-                        <span>Coming Soon...</span>
-                    </div>
-                    <div class="message-wrapper reverse d-none">
-                        <div class="profile-picture">
-                            <p class="last-seen">11:44 am</p>
-                            <p class="name">Jane Nelson</p>
-                            <img src="images/profile-image.png" alt="pp">
-                        </div>
-                        <div class="message-content">
-                            <div class="message">Hi guys <br> Please review this clause and let me <br> know your
-                                thoughts. <br> I’m concerned about the “terms and <br> conditions.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message-wrapper reverse d-none">
-                        <div class="profile-picture">
-                            <p class="last-seen">10:39 am</p>
-                            <p class="name">Bob Miller</p>
-                            <img src="images/linkedin-sales.png" alt="pp">
-                        </div>
-                        <div class="message-content">
-                            <div class="message">Hi @Jane Nelson <br>Yep, that's concerning for us too. <br> Nothing
-                                will be "reasonably <br> acceptable" to these guys. We need <br> to make it cleaner than
-                                that. How <br> about we get them to agree to all <br> assignment terms as we go. There
-                                <br> are only 6 contracts to which this <br> will apply anyway
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message-wrapper reverse d-none">
-                        <div class="profile-picture">
-                            <p class="last-seen">10:52 am</p>
-                            <p class="name">Bill Andrews</p>
-                            <img src="images/linkedin-sales1.png" alt="pp">
-                        </div>
-                        <div class="message-content">
-                            <div class="message">Hi @Jane Nelson <br>Yep, that's concerning for us too. <br> Nothing
-                                will be "reasonably <br> acceptable" to these guys. We need <br> to make it cleaner than
-                                that. How <br> about we get them to agree to all <br> assignment terms as we go. There
-                                <br> are only 6 contracts to which this <br> will apply anyway
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message-wrapper dark-gold-color d-none">
-                        <div class="profile-picture">
-                            <img src="images/profile-image.png" alt="pp">
-                            <p class="name">Jane Nelson</p>
-                            <p class="last-seen">11:00am</p>
-                        </div>
-                        <div class="message-content">
-                            <h4>Sent a position confirmation <br> request</h4>
-                            <div class="message">Proposal Change to sub (b) so <br> assignment terms must be <br>
-                                approved by Buyer in 14 days or <br> they will be deemed to be <br> approved.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message-wrapper light-gold-color d-none">
-                        <div class="profile-picture">
-                            <img src="images/linkedin-sales3.png" alt="pp">
-                            <p class="name">Rio Mendoza</p>
-                            <p class="last-seen">10:05 am</p>
-                        </div>
-                        <div class="message-content">
-                            <div class="message">We have got this proposal on sub <br> (b) clause 10.1 from the Seller.
-                                In my <br> view it is ok but it should be 28 days <br> not 14 and instead of “reasonable
-                                <br> endeavours” it should be “best <br> endeavours”. Your thoughts?
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message-wrapper reverse dudhiya-color d-none">
-                        <div class="profile-picture">
-                            <p class="last-seen">10:39 am</p>
-                            <p class="name">Bob Miller</p>
-                            <img src="images/linkedin-sales.png" alt="pp">
-                        </div>
-                        <div class="message-content">
-                            <h4>Sent a position confirmation <br> request</h4>
-                            <div class="message">Proposal Change to sub (b) so <br> assignment terms must be <br>
-                                approved by Buyer in 14 days or <br> they will be deemed to be <br> approved.
-                            </div>
-                        </div>
-                        <strong>Position Approved By Bob Miller</strong>
-                    </div>
-                    <div class="message-wrapper reverse d-none">
-                        <div class="profile-picture">
-                            <p class="last-seen">10:39 am</p>
-                            <p class="name">Bob Miller</p>
-                            <img src="images/linkedin-sales.png" alt="pp">
-                        </div>
-                        <div class="message-content">
-                            <div class="message">Hi @Bob Miller, They have rejected <br> our proposal and send an
-                                counter <br> proposal with condition "Proposal <br> agree to change to sub (b) as <br>
-                                proposed above but with <br> “reasonable endeavours” becoming <br> “best endeavours”".
-                                What is your <br> thoughts on this?
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message-wrapper red-color d-none">
-                        <div class="profile-picture">
-                            <img src="images/profile-image.png" alt="pp">
-                            <p class="name">Rio Mendoza</p>
-                            <p class="last-seen">11:00am</p>
-                        </div>
-                        <div class="message-content">
-                            <h4>Position confirmation rejected</h4>
-                            <div class="message">Proposal Change to sub (b) so <br> assignment terms must be <br>
-                                approved by Buyer in 14 days or <br> they will be deemed to be <br> approved.
-                            </div>
-                        </div>
-                        <strong>Position Rejected by Rio Mendoza</strong>
-                    </div>
                 </div>
             </div>
             <div class="chat-create-footer">
@@ -445,12 +332,13 @@
             <div class="chat-create-footer">
                 <span id="typingSpan"></span>
                 <div class="form-group">
-                    <textarea type="textarea" id="messageInput" placeholder="Type message here" class="form-control"></textarea>
+                    <textarea type="textarea" id="messageInput" placeholder="Type message here"
+                              class="form-control"></textarea>
                 </div>
                 <div class="chat-footer-inner" id="chatFooterInner">
                     <button class="btn" id="btnGoToCounterpartyA">Go to counterparty</button>
                     <div class="send-btn">
-<!--                        <button class="btn-primary attach"><img src="images/attach-icon.svg" alt=""></button>-->
+                        <!--                        <button class="btn-primary attach"><img src="images/attach-icon.svg" alt=""></button>-->
                         <button class="btn-primary" id="btnSend"><img src="images/send-icon.svg" alt="">Send</button>
                     </div>
                 </div>
