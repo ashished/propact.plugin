@@ -1203,7 +1203,7 @@
                         // location.reload(true);
                         let data = {
                             chatRoomName: loggedInUserDetails.userWebId + "_" + documentID,
-                            documentMode: documentMode == 'markup' ? 'edit' : 'markup'
+                            documentMode: documentMode
                         }
                         socket.emit('switch_document_mode', data);
                         // document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
