@@ -215,6 +215,19 @@
             user_is_typing_contract_section(socket, data);
         });
 
+
+        const varInputInviteEmailAddress = document.getElementById('inviteEmailAddress');
+        varInputInviteEmailAddress?.addEventListener('keydown', function() {
+            var apiError = document.getElementsByClassName("api-error");
+            // Loop through the elements and remove their content and class
+            for (var i = 0; i < apiError.length; i++) {
+                var label = apiError[i];
+                label.innerHTML = ""; // Remove content
+                label.classList.remove("label"); // Remove class
+            }
+
+        });
+
         const varBtnGoToConversionHistory = document.getElementById('btnGoToConversionHistory');
         varBtnGoToConversionHistory.addEventListener('click', function () {
             chatHistoryNextPage = 1;
@@ -1061,9 +1074,9 @@
             .then(response => response.json())
             .then(data => {
                 // Handle the response data
-                document.getElementById("inviteForm").reset();
                 const responseData = data;
                 if (responseData && responseData.status == true && responseData.code == 200) {
+                    document.getElementById("inviteForm").reset();
                     document.getElementById('divInviteCounterpartyPending').classList.remove(displayNoneClass);
                     document.getElementById('divInviteCounterpartyForm').classList.add(displayNoneClass);
                     if (responseData.data && responseData.data._id) {
@@ -1072,6 +1085,9 @@
                     } else {
                         getOpenContractUserDetails();
                     }
+                } else if (responseData && responseData.status == false) {
+                    $('#inviteEmailAddress').parent().append('<label class="error api-error">'+responseData.message+'</label>');
+                    // document.getElementById('inviteEmailAddress').setCustomValidity(responseData.message);
                 }
             })
             .catch(error => {
