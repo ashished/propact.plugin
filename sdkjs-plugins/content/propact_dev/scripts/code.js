@@ -78,7 +78,9 @@
          */
         if (documentMode == 'markup') {
             document.getElementById('btnCreateClause').classList.add(disabledClass);
+            document.getElementById('btnMarkupMode').innerHTML = "Back to Contract";
         } else {
+            document.getElementById('btnMarkupMode').innerHTML = "Markup Mode";
             if (text) {
                 document.getElementById('btnCreateClause').classList.remove(disabledClass);
             } else {
@@ -131,6 +133,15 @@
                 document.getElementById('divContractCreate').classList.remove(displayNoneClass);
                 toggleInviteUsersDivShow = true;
             }
+        });
+
+        const varBtnMarkupMode = document.getElementById('btnMarkupMode');
+        varBtnMarkupMode.addEventListener('click', function() {
+            let data = {
+                chatRoomName: loggedInUserDetails.userWebId + "_" + documentID,
+                documentMode: documentMode == 'markup' ? 'edit' : 'markup'
+            }
+            socket.emit('switch_document_mode', data);
         });
         // Contract clause lists screen
 
@@ -565,6 +576,9 @@
                 {auth: {authToken}}
             );
 
+            let chatRoomName = loggedInUserDetails.userWebId + "_" + documentID;
+            socket.emit('join_chat_room', chatRoomName);
+
             function user_is_typing_contract_section(socket, data) {
                 socket.emit('user_is_typing_contract_section', data);
             }
@@ -737,6 +751,7 @@
             socket.on('error', (error) => {
                 console.error('Socket Error:', error);
             });
+
             flagSocketInit = true;
         }
         /**============================== Socket Function End =================================*/
