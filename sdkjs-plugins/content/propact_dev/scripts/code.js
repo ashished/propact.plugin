@@ -1199,11 +1199,16 @@
                         window.Asc.plugin.executeMethod("AddContentControl", [nContentControlType, nContentControlProperties]);
                         var sDocumentEditingRestrictions = "readOnly";
                         window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
-                        getContractSectionList();
-                        location.reload(true);
-                        document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
-                        document.getElementById('divContractCreate').classList.add(displayNoneClass);
-                        document.getElementById('divContractLists').classList.remove(displayNoneClass);
+                        // getContractSectionList();
+                        // location.reload(true);
+                        let data = {
+                            chatRoomName: loggedInUserDetails.userWebId + "_" + documentID,
+                            documentMode: documentMode == 'markup' ? 'edit' : 'markup'
+                        }
+                        socket.emit('switch_document_mode', data);
+                        // document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
+                        // document.getElementById('divContractCreate').classList.add(displayNoneClass);
+                        // document.getElementById('divContractLists').classList.remove(displayNoneClass);
                     }
                 })
                 .catch(error => {
