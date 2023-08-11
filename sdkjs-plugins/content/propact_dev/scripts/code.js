@@ -415,7 +415,7 @@
         });
 
         $(document).on('click', '#btnSendCP', async function () {
-            chat_message = $('#messageInput').val();
+            chat_message = $('#messageInputCP').val();
             const addNewContractMessageDetail = {
                 "contractId": documentID,
                 "contractSectionId": selectedThreadID,
