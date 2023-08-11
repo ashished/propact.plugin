@@ -484,9 +484,6 @@
                 if (selectedTag && selectedTag > -1 && tagLists[selectedTag].Id && document.getElementById(tagLists[selectedTag].Id)) {
                     selectedCommentThereadID = tagLists[selectedTag].Tag;
 
-                    let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
-                    socket.emit('join_contract_section_chat_room', chatRoomName);
-
                     $('.div-selected').removeClass('div-selected');
                     $('#contractListItemsDiv #' + tagLists[selectedTag].Id).addClass('div-selected');
                 }
