@@ -1292,7 +1292,7 @@
                         getContractSectionList();
                         let data = {
                             chatRoomName: documentID,
-                            clauseCreated: true
+                            tagData: nContentControlProperties
                         }
                         socket.emit('new_clause_created', data);
                         location.reload(true);
