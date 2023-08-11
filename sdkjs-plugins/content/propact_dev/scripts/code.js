@@ -179,9 +179,6 @@
             await getContractSectionMessageList('our');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
             socket.emit('join_contract_section_chat_room', chatRoomName);
-            document.getElementById('chatHeader').classList.remove('counterparty');
-            document.getElementById('btnGoToCounterpartyA').classList.remove(displayNoneClass);
-            document.getElementById('chatFooterInner').classList.remove('justify-content-end');
             document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
@@ -190,23 +187,20 @@
         varBtnGoToCounterparty?.addEventListener('click', async function () {
             withType = 'Counterparty';
             messageConfirmationFor = 'Opposite Side';
-            document.getElementById('chatArea').innerHTML = '';
+            document.getElementById('chatCPArea').innerHTML = '';
             chatNextPage = 1;
             chatHasNextPage = true;
             await getContractSectionMessageList('Counterparty');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
             socket.emit('join_contract_section_chat_room', chatRoomName);
-            document.getElementById('chatHeader').classList.add('counterparty');
-            document.getElementById('btnGoToCounterpartyA').classList.add(displayNoneClass);
-            document.getElementById('chatFooterInner').classList.add('justify-content-end');
-            document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
+            document.getElementById('divContractCounterpartyChat').classList.remove(displayNoneClass);
             document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
         });
         // Contract chat history screen
 
         // Contract sameside chat screen
-        const varBtnmessageInput = document.getElementById('messageInput');
-        varBtnmessageInput?.addEventListener('keydown', function () {
+        const varMessageInput = document.getElementById('messageInput');
+        varMessageInput?.addEventListener('keydown', function () {
             var data = {
                 chatRoomName: withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID,
                 userName: loggedInUserDetails.firstName,
@@ -215,6 +209,15 @@
             user_is_typing_contract_section(socket, data);
         });
 
+        const varMessageInputCP = document.getElementById('messageInputCP');
+        varMessageInputCP?.addEventListener('keydown', function () {
+            var data = {
+                chatRoomName: withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID,
+                userName: loggedInUserDetails.firstName,
+                with: withType
+            }
+            user_is_typing_contract_section(socket, data);
+        });
 
         const varInputInviteEmailAddress = document.getElementById('inviteEmailAddress');
         varInputInviteEmailAddress?.addEventListener('keydown', function() {
@@ -237,21 +240,41 @@
             document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
         });
 
+        const varBtnGoToConversionHistoryA = document.getElementById('btnGoToConversionHistoryA');
+        varBtnGoToConversionHistoryA.addEventListener('click', function () {
+            chatHistoryNextPage = 1;
+            chatHistoryHasNextPage = true;
+            getContractSectionMessageHistory();
+            document.getElementById('divContractCounterpartyChat').classList.add(displayNoneClass);
+            document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
+        });
+
+        const varBtnGoToSameSideA = document.getElementById('btnGoToSameSideA');
+        varBtnGoToSameSideA.addEventListener('click', async function () {
+            withType = 'Our Team';
+            messageConfirmationFor = 'Same Side';
+            document.getElementById('chatArea').innerHTML = '';
+            chatNextPage = 1;
+            chatHasNextPage = true;
+            await getContractSectionMessageList('our');
+            let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
+            socket.emit('join_contract_section_chat_room', chatRoomName);
+            document.getElementById('divContractCounterpartyChat').classList.add(displayNoneClass);
+            document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
+        });
+
         const varBtnGoToCounterpartyA = document.getElementById('btnGoToCounterpartyA');
         varBtnGoToCounterpartyA.addEventListener('click', async function () {
             withType = 'Counterparty';
             messageConfirmationFor = 'Opposite Side';
-            document.getElementById('chatArea').innerHTML = '';
+            document.getElementById('chatCPArea').innerHTML = '';
             chatNextPage = 1;
             chatHasNextPage = true;
             await getContractSectionMessageList('Counterparty');
             let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
             socket.emit('join_contract_section_chat_room', chatRoomName);
-            document.getElementById('chatHeader').classList.add('counterparty');
-            document.getElementById('btnGoToCounterpartyA').classList.add(displayNoneClass);
-            document.getElementById('chatFooterInner').classList.add('justify-content-end');
-            document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
-            document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
+            document.getElementById('divContractCounterpartyChat').classList.remove(displayNoneClass);
+            document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
         });
 
         const varBtnRedirectClauseListsB = document.getElementById('btnRedirectClauseListsB');
@@ -261,6 +284,15 @@
             getContractSectionList();
             document.getElementById('divContractLists').classList.remove(displayNoneClass);
             document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
+        });
+
+        const varBtnRedirectClauseListsC = document.getElementById('btnRedirectClauseListsC');
+        varBtnRedirectClauseListsC.addEventListener('click', function () {
+            selectedCommentThereadID = '';
+            $('.div-selected').removeClass('div-selected');
+            getContractSectionList();
+            document.getElementById('divContractLists').classList.remove(displayNoneClass);
+            document.getElementById('divContractCounterpartyChat').classList.add(displayNoneClass);
         });
         // Contract sameside chat screen
 
@@ -384,7 +416,13 @@
 
         document.getElementById('chatBodyID').onscroll = (e) => {
             if (document.getElementById('chatBodyID')?.scrollTop == 0 && chatHasNextPage && chatNextPage != 1) {
-                getContractSectionMessageList(withType == 'Our Team' ? 'our' : 'Counterparty');
+                getContractSectionMessageList('our');
+            }
+        };
+
+        document.getElementById('chatCPBodyID').onscroll = (e) => {
+            if (document.getElementById('chatCPBodyID')?.scrollTop == 0 && chatHasNextPage && chatNextPage != 1) {
+                getContractSectionMessageList('Counterparty');
             }
         };
 
@@ -641,10 +679,10 @@
                     }
 
                     clearTimeout(typingTimeout);
-                    document.getElementById('typingSpan').textContent = text;
+                    document.getElementById('typingSpanCP').textContent = text;
                 }
                 typingTimeout = setTimeout(() => {
-                    document.getElementById('typingSpan').textContent = '';
+                    document.getElementById('typingSpanCP').textContent = '';
                 }, 5000);
             });
 
@@ -813,12 +851,16 @@
                         document.getElementById('divContractLists').classList.remove(displayNoneClass);
                         document.getElementById('contractCounterpartySection').classList.remove(disabledClass);
                         document.getElementById('userProfileImage').src = responseData.data.loggedInUserDetails.imageUrl;
+                        document.getElementById('userProfileImageA').src = responseData.data.loggedInUserDetails.imageUrl ?? 'images/no-profile-image.jpg';
+                        document.getElementById('userProfileImageB').src = responseData.data.loggedInUserDetails.imageUrl ?? 'images/no-profile-image.jpg';
                         document.getElementById('counterpartyImage').src = responseData.data.oppositeUser.imageUrl;
                         document.getElementById('organizationImage').src = responseData.data.oppositeUser.company.imageUrl;
                         document.getElementById('userProfileName').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
                         document.getElementById('userProfileNameA').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
+                        document.getElementById('userProfileNameB').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
                         document.getElementById('userProfilerole').textContent = responseData.data.loggedInUserDetails.role;
                         document.getElementById('userProfileroleA').textContent = responseData.data.loggedInUserDetails.role;
+                        document.getElementById('userProfileroleB').textContent = responseData.data.loggedInUserDetails.role;
                         document.getElementById('organizationName').textContent = responseData.data.oppositeUser.company.companyName;
                         document.getElementById('counterpartyName').textContent = responseData.data.oppositeUser.firstName + " " + responseData.data.oppositeUser.lastName;
                         if (documentMode != 'markup') {
@@ -1335,64 +1377,96 @@
                         if (responseData.data.data.length > 0) {
                             let result;
                             if (chatNextPage == 1) {
-                                generalChatMessage = [];
-                                document.getElementById('chatArea').innerHTML = '';
-                                result = responseData?.data?.data.reverse();
-                                const myDiv = document.getElementById("chatBodyID");
-                                const scrollToOptions = {
-                                    top: myDiv.scrollHeight,
-                                    behavior: 'smooth'
-                                };
-                                myDiv.scrollTo(scrollToOptions);
+                                if (messageType == 'our') {
+                                    document.getElementById('chatArea').innerHTML = '';
+                                    result = responseData?.data?.data.reverse();
+                                    const myDiv = document.getElementById("chatBodyID");
+                                    const scrollToOptions = {
+                                        top: myDiv.scrollHeight,
+                                        behavior: 'smooth'
+                                    };
+                                    myDiv.scrollTo(scrollToOptions);
+                                } else {
+                                    document.getElementById('chatCPArea').innerHTML = '';
+                                    result = responseData?.data?.data.reverse();
+                                    const myDiv = document.getElementById("chatCPBodyID");
+                                    const scrollToOptions = {
+                                        top: myDiv.scrollHeight,
+                                        behavior: 'smooth'
+                                    };
+                                    myDiv.scrollTo(scrollToOptions);
+                                }
                             } else {
                                 result = responseData?.data?.data;
                             }
-                            let setLastHeight = document.getElementById('chatArea').scrollHeight;
+                            let setLastHeight;
+                            if (messageType == 'our') {
+                                setLastHeight = document.getElementById('chatArea').scrollHeight;
+                            } else {
+                                setLastHeight = document.getElementById('chatCPArea').scrollHeight;
+                            }
                             result.forEach((chatMessage) => {
                                 let html = '';
-                                if (generalChatMessage.findIndex((ele) => +ele._id == chatMessage._id) < 0) {
-                                    if (chatMessage.from == loggedInUserDetails._id) {
-                                        html += '<div class="message-wrapper reverse ' + (messageType == "Counterparty" ? "light-gold-color" : "") + '">\n' +
-                                            '   <div class="profile-picture">\n' +
-                                            '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
-                                            '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
-                                            '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                                            '   </div>\n' +
-                                            '   <div class="message-content">\n' +
-                                            '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
-                                            '      </div>\n' +
-                                            '   </div>\n' +
-                                            '</div>\n';
-                                    } else {
-                                        html += '<div class="message-wrapper grey-color ' + (messageType == "Counterparty" ? "light-gold-color" : "") + '">\n' +
-                                            '   <div class="profile-picture">\n' +
-                                            '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                                            '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
-                                            '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
-                                            '   </div>\n' +
-                                            '   <div class="message-content">\n' +
-                                            '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
-                                            '      </div>\n' +
-                                            '   </div>\n' +
-                                            '</div>\n';
-                                    }
-                                    generalChatMessage.push(chatMessage);
+                                if (chatMessage.from == loggedInUserDetails._id) {
+                                    html += '<div class="message-wrapper reverse ' + (messageType == "Counterparty" ? "light-gold-color" : "") + '">\n' +
+                                        '   <div class="profile-picture">\n' +
+                                        '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
+                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
+                                        '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                                        '   </div>\n' +
+                                        '   <div class="message-content">\n' +
+                                        '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
+                                        '      </div>\n' +
+                                        '   </div>\n' +
+                                        '</div>\n';
+                                } else {
+                                    html += '<div class="message-wrapper grey-color ' + (messageType == "Counterparty" ? "light-gold-color" : "") + '">\n' +
+                                        '   <div class="profile-picture">\n' +
+                                        '      <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                                        '      <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '</p>\n' +
+                                        '      <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
+                                        '   </div>\n' +
+                                        '   <div class="message-content">\n' +
+                                        '      <div class="message">' + chatMessage.message.replaceAll(/\n/g, '<br>') +
+                                        '      </div>\n' +
+                                        '   </div>\n' +
+                                        '</div>\n';
                                 }
 
                                 if (chatNextPage == 1) {
-                                    var contentDiv = document.getElementById("chatArea");
-                                    var newElement = document.createElement("div");
-                                    newElement.innerHTML = html;
-                                    contentDiv.appendChild(newElement);
+                                    var contentDiv;
+                                    if (messageType == 'our') {
+                                        contentDiv = document.getElementById("chatArea");
+                                        var newElement = document.createElement("div");
+                                        newElement.innerHTML = html;
+                                        contentDiv.appendChild(newElement);
+                                    } else {
+                                        contentDiv = document.getElementById("chatCPArea");
+                                        var newElement = document.createElement("div");
+                                        newElement.innerHTML = html;
+                                        contentDiv.appendChild(newElement);
+                                    }
                                     // targetDiv.before(html);
                                 } else {
-                                    var contentDiv = document.getElementById("chatArea");
-                                    var newElement = document.createElement("div");
-                                    newElement.innerHTML = html;
-                                    contentDiv.insertBefore(newElement, contentDiv.firstChild);
+                                    if (messageType == 'our') {
+                                        var contentDiv = document.getElementById("chatArea");
+                                        var newElement = document.createElement("div");
+                                        newElement.innerHTML = html;
+                                        contentDiv.insertBefore(newElement, contentDiv.firstChild);
+                                    } else {
+                                        var contentDiv = document.getElementById("chatCPArea");
+                                        var newElement = document.createElement("div");
+                                        newElement.innerHTML = html;
+                                        contentDiv.insertBefore(newElement, contentDiv.firstChild);
+                                    }
                                 }
-                            })
-                            const myDiv = document.getElementById("chatBodyID");
+                            });
+                            let myDiv;
+                            if (messageType == 'our') {
+                                myDiv = document.getElementById("chatBodyID");
+                            } else {
+                                myDiv = document.getElementById("chatCPBodyID");
+                            }
                             const scrollToOptions = {
                                 top: myDiv.scrollHeight,
                                 behavior: 'smooth'
@@ -1400,7 +1474,11 @@
                             if (chatNextPage == 1) {
                                 myDiv.scrollTo(scrollToOptions);
                             } else {
-                                document.getElementById('chatBodyID').scrollTop = document.getElementById('chatArea').scrollHeight - setLastHeight;
+                                if (messageType == 'our') {
+                                    document.getElementById('chatBodyID').scrollTop = document.getElementById('chatArea').scrollHeight - setLastHeight;
+                                } else {
+                                    document.getElementById('chatCPBodyID').scrollTop = document.getElementById('chatCPArea').scrollHeight - setLastHeight;
+                                }
                             }
                             chatHasNextPage = responseData.data.hasNextPage;
                             chatNextPage = responseData.data.nextPage;
