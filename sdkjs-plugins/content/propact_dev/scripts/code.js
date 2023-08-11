@@ -816,6 +816,7 @@
             socket.on('forward_new_clause_create', data => {
                 if (data) {
                     console.log('__data', data);
+                    tagLists.push(JSON.parse(data));
                     getContractSectionList();
                 }
             })
@@ -1292,7 +1293,7 @@
                         getContractSectionList();
                         let data = {
                             chatRoomName: documentID,
-                            tagData: nContentControlProperties
+                            tagData: JSON.stringify(nContentControlProperties)
                         }
                         socket.emit('new_clause_created', data);
                         location.reload(true);
