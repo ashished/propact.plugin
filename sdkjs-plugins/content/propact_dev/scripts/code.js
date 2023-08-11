@@ -481,23 +481,14 @@
         } else if (_plugin.info.methodName == "GetCurrentContentControl") {
             if (tagLists && tagLists.length > 0 && returnValue) {
                 let selectedTag = tagLists.findIndex((ele) => ele.InternalId == returnValue);
-                if (fClickBtnCur) {
-                    //method for select content control by id
-                    window.Asc.plugin.executeMethod("SelectContentControl", [tagLists[selectedTag].Id]);
-                    fClickBtnCur = false;
-                } else if (!($('.div-selected').length && $('.div-selected')[0].id === tagLists[selectedTag].Id) && tagLists[selectedTag].Id) {
-                    if (document.getElementById(tagLists[selectedTag].Id)) {
-                        selectedCommentThereadID = tagLists[selectedTag].Tag;
+                if (selectedTag && selectedTag > -1 && tagLists[selectedTag].Id && document.getElementById(tagLists[selectedTag].Id)) {
+                    selectedCommentThereadID = tagLists[selectedTag].Tag;
 
-                        let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
-                        socket.emit('join_contract_section_chat_room', chatRoomName);
+                    let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
+                    socket.emit('join_contract_section_chat_room', chatRoomName);
 
-                        $('.div-selected').removeClass('div-selected');
-                        $('#contractListItemsDiv #' + tagLists[selectedTag].Id).addClass('div-selected');
-                    }
-                } else if (!returnValue) {
-                    selectedCommentThereadID = '';
                     $('.div-selected').removeClass('div-selected');
+                    $('#contractListItemsDiv #' + tagLists[selectedTag].Id).addClass('div-selected');
                 }
             }
         }
