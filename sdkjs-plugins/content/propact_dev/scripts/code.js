@@ -97,6 +97,363 @@
             getOpenContractUserDetails();
         }
 
+        // Invite counterparty screen
+        const varBtnRedirectInviteCounterpartyForm = document.getElementById('btnRedirectInviteCounterpartyForm');
+        varBtnRedirectInviteCounterpartyForm.addEventListener('click', function () {
+            document.getElementById('divInviteCounterparty').classList.add(displayNoneClass);
+            document.getElementById('divInviteCounterpartyForm').classList.remove(displayNoneClass);
+        });
+        // Invite counterparty screen
+
+        // Invite counterparty Form screen
+        const varBtnRedirectInviteCounterpartyCancel = document.getElementById('btnRedirectInviteCounterpartyCancel');
+        varBtnRedirectInviteCounterpartyCancel.addEventListener('click', function () {
+            document.getElementById('divInviteCounterparty').classList.remove(displayNoneClass);
+            document.getElementById('divInviteCounterpartyForm').classList.add(displayNoneClass);
+        });
+        // Invite counterparty Form screen
+
+        // Invite counterparty Pending screen
+        const varBtnResendVerification = document.getElementById('btnResendVerification');
+        varBtnResendVerification.addEventListener('click', function () {
+            resendCounterpartyInvitation();
+        });
+
+        const varBtnCancelInvitation = document.getElementById('btnCancelInvitation');
+        varBtnCancelInvitation.addEventListener('click', function () {
+            cancelInvitation();
+        });
+        // Invite counterparty Pending screen
+
+        // Contract clause lists screen
+        const varBtnCreateClause = document.getElementById('btnCreateClause');
+        varBtnCreateClause.addEventListener('click', function () {
+            if (text) {
+                document.getElementById('divContractLists').classList.add(displayNoneClass);
+                document.getElementById('divContractCreate').classList.remove(displayNoneClass);
+                toggleInviteUsersDivShow = true;
+            }
+        });
+
+        const varBtnMarkupMode = document.getElementById('btnMarkupMode');
+        varBtnMarkupMode.addEventListener('click', function() {
+            let data = {
+                chatRoomName: loggedInUserDetails.userWebId + "_" + documentID,
+                documentMode: documentMode == 'markup' ? 'edit' : 'markup'
+            }
+            socket.emit('switch_document_mode', data);
+        });
+        // Contract clause lists screen
+
+        // Create contract clause screen
+        const varBtnContractCreateClose = document.getElementById('btnContractCreateClose');
+        varBtnContractCreateClose.addEventListener('click', function () {
+            document.getElementById('divContractLists').classList.remove(displayNoneClass);
+            document.getElementById('divContractCreate').classList.add(displayNoneClass);
+        });
+
+        const varBtnContractCreateCancel = document.getElementById('btnContractCreateCancel');
+        varBtnContractCreateCancel.addEventListener('click', function () {
+            document.getElementById('divContractLists').classList.remove(displayNoneClass);
+            document.getElementById('divContractCreate').classList.add(displayNoneClass);
+        });
+        // Create contract clause screen
+
+        // Contract chat history screen
+        const varBtnRedirectClauseListsA = document.getElementById('btnRedirectClauseListsA');
+        varBtnRedirectClauseListsA.addEventListener('click', function () {
+            selectedCommentThereadID = '';
+            $('.div-selected').removeClass('div-selected');
+            getContractSectionList();
+            document.getElementById('divContractLists').classList.remove(displayNoneClass);
+            document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
+        });
+
+        const varBtnGoToSameSideChat = document.getElementById('btnGoToSameSideChat');
+        varBtnGoToSameSideChat?.addEventListener('click', async function () {
+            withType = 'Our Team';
+            messageConfirmationFor = 'Same Side';
+            document.getElementById('chatArea').innerHTML = '';
+            chatNextPage = 1;
+            chatHasNextPage = true;
+            await getContractSectionMessageList('our');
+            let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
+            socket.emit('join_contract_section_chat_room', chatRoomName);
+            document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
+            document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
+        });
+
+        const varBtnGoToCounterparty = document.getElementById('btnGoToCounterparty');
+        varBtnGoToCounterparty?.addEventListener('click', async function () {
+            withType = 'Counterparty';
+            messageConfirmationFor = 'Opposite Side';
+            document.getElementById('chatCPArea').innerHTML = '';
+            chatNextPage = 1;
+            chatHasNextPage = true;
+            await getContractSectionMessageList('Counterparty');
+            let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
+            socket.emit('join_contract_section_chat_room', chatRoomName);
+            document.getElementById('divContractCounterpartyChat').classList.remove(displayNoneClass);
+            document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
+        });
+        // Contract chat history screen
+
+        // Contract sameside chat screen
+        const varMessageInput = document.getElementById('messageInput');
+        varMessageInput?.addEventListener('keydown', function () {
+            var data = {
+                chatRoomName: withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID,
+                userName: loggedInUserDetails.firstName,
+                with: withType
+            }
+            user_is_typing_contract_section(socket, data);
+        });
+
+        const varMessageInputCP = document.getElementById('messageInputCP');
+        varMessageInputCP?.addEventListener('keydown', function () {
+            var data = {
+                chatRoomName: withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID,
+                userName: loggedInUserDetails.firstName,
+                with: withType
+            }
+            user_is_typing_contract_section(socket, data);
+        });
+
+        const varInputInviteEmailAddress = document.getElementById('inviteEmailAddress');
+        varInputInviteEmailAddress?.addEventListener('keydown', function() {
+            var apiError = document.getElementsByClassName("api-error");
+            // Loop through the elements and remove their content and class
+            for (var i = 0; i < apiError.length; i++) {
+                var label = apiError[i];
+                label.innerHTML = ""; // Remove content
+                label.classList.remove("label"); // Remove class
+            }
+
+        });
+
+        const varBtnGoToConversionHistory = document.getElementById('btnGoToConversionHistory');
+        varBtnGoToConversionHistory.addEventListener('click', function () {
+            chatHistoryNextPage = 1;
+            chatHistoryHasNextPage = true;
+            getContractSectionMessageHistory();
+            document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
+            document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
+        });
+
+        const varBtnGoToConversionHistoryA = document.getElementById('btnGoToConversionHistoryA');
+        varBtnGoToConversionHistoryA.addEventListener('click', function () {
+            chatHistoryNextPage = 1;
+            chatHistoryHasNextPage = true;
+            getContractSectionMessageHistory();
+            document.getElementById('divContractCounterpartyChat').classList.add(displayNoneClass);
+            document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
+        });
+
+        const varBtnGoToSameSideA = document.getElementById('btnGoToSameSideA');
+        varBtnGoToSameSideA.addEventListener('click', async function () {
+            withType = 'Our Team';
+            messageConfirmationFor = 'Same Side';
+            document.getElementById('chatArea').innerHTML = '';
+            chatNextPage = 1;
+            chatHasNextPage = true;
+            await getContractSectionMessageList('our');
+            let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
+            socket.emit('join_contract_section_chat_room', chatRoomName);
+            document.getElementById('divContractCounterpartyChat').classList.add(displayNoneClass);
+            document.getElementById('divContractSameSideChat').classList.remove(displayNoneClass);
+        });
+
+        const varBtnGoToCounterpartyA = document.getElementById('btnGoToCounterpartyA');
+        varBtnGoToCounterpartyA.addEventListener('click', async function () {
+            withType = 'Counterparty';
+            messageConfirmationFor = 'Opposite Side';
+            document.getElementById('chatCPArea').innerHTML = '';
+            chatNextPage = 1;
+            chatHasNextPage = true;
+            await getContractSectionMessageList('Counterparty');
+            let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
+            socket.emit('join_contract_section_chat_room', chatRoomName);
+            document.getElementById('divContractCounterpartyChat').classList.remove(displayNoneClass);
+            document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
+        });
+
+        const varBtnRedirectClauseListsB = document.getElementById('btnRedirectClauseListsB');
+        varBtnRedirectClauseListsB.addEventListener('click', function () {
+            selectedCommentThereadID = '';
+            $('.div-selected').removeClass('div-selected');
+            getContractSectionList();
+            document.getElementById('divContractLists').classList.remove(displayNoneClass);
+            document.getElementById('divContractSameSideChat').classList.add(displayNoneClass);
+        });
+
+        const varBtnRedirectClauseListsC = document.getElementById('btnRedirectClauseListsC');
+        varBtnRedirectClauseListsC.addEventListener('click', function () {
+            selectedCommentThereadID = '';
+            $('.div-selected').removeClass('div-selected');
+            getContractSectionList();
+            document.getElementById('divContractLists').classList.remove(displayNoneClass);
+            document.getElementById('divContractCounterpartyChat').classList.add(displayNoneClass);
+        });
+        // Contract sameside chat screen
+
+        // Toggle inviteuser tabs view
+        document.getElementById('inviteUsersInput').addEventListener('click', function () {
+            if (toggleInviteUsersDivShow) {
+                document.getElementById('inviteUsersBox').classList.remove(displayNoneClass);
+            } else {
+                document.getElementById('inviteUsersBox').classList.add(displayNoneClass);
+            }
+            toggleInviteUsersDivShow = !toggleInviteUsersDivShow;
+        });
+
+        // Clause Lazyload functionality
+        document.getElementById('contractListItemsDiv').onscroll = (e) => {
+            if (document.getElementById('contractListItemsDiv').scrollTop + document.getElementById('contractListItemsDiv').offsetHeight >= document.getElementById('contractListItemsDiv').scrollHeight) {
+                if (clauseHasNextPage) {
+                    getContractSectionList();
+                }
+            }
+        }
+
+        // Clause listing screen - Search input
+        document.getElementById('inputSearchbox').addEventListener('keyup', function (event) {
+            clearTimeout(searchTimeout); // Clear any existing timeout
+
+            // Set a new timeout to call performSearch after 800 milliseconds (adjust as needed)
+            searchTimeout = setTimeout(function () {
+                if (searchText != event.target.value.trim()) {
+                    document.getElementById('contractListItemsDiv').innerHTML = '';
+                    searchText = event.target.value.trim();
+                    clauseNextPage = 1;
+                    clauseHasNextPage = true;
+                    getContractSectionList();
+                } else {
+                    searchText = '';
+                    clauseNextPage = 1;
+                    clauseHasNextPage = true;
+                    getContractSectionList();
+                }
+            }, 500);
+        });
+
+
+        /** Invite counterparty form submit */
+        $("#inviteForm").validate({
+            submitHandler: function (form) {
+                // $(form).ajaxSubmit();
+                inviteCounterparties();
+            }
+        });
+
+        /** Clause create form submit */
+        $("#clauseForm").validate({
+            submitHandler: function (form) {
+                createClauseSection(socket);
+            }
+        });
+
+        $(document).on('click', '#inviteteams', function () {
+            $('.team-chkbox').prop('checked', this.checked);
+            updateInviteTeamCheckbox();
+        });
+
+        $(document).on('click', '.team-chkbox', function () {
+            var allChecked = $('.team-chkbox:checked').length === $('.team-chkbox').length;
+            $('#inviteteams').prop('checked', allChecked);
+            updateInviteTeamCheckbox();
+        });
+
+        $(document).on('click', '#inviteusers', function () {
+            $('.user-chkbox').prop('checked', this.checked);
+            updateInviteUserCheckbox();
+        })
+
+        $(document).on('click', '.user-chkbox', function () {
+            var allChecked = $('.user-chkbox:checked').length === $('.user-chkbox').length;
+            $('#inviteusers').prop('checked', allChecked);
+            updateInviteUserCheckbox();
+        });
+
+        $(document).on('click', '.contract-item', async function () {
+            fClickLabel = true;
+            var elementID = $(this).attr('id');
+            let tagExists = tagLists.findIndex((ele) => +ele.Id == +elementID);
+            if (tagExists > -1) {
+                selectedCommentThereadID = tagLists[tagExists].Tag;
+                selectedThreadID = $(this).data('id');
+                chatHistoryNextPage = 1;
+                chatHistoryHasNextPage = true;
+                getContractSectionMessageHistory();
+                let chatRoomName = 'conversion_history_' + selectedCommentThereadID;
+                socket.emit('join_contract_section_chat_room', chatRoomName);
+                document.getElementById('divContractLists').classList.add(displayNoneClass);
+                document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
+                // window.Asc.plugin.executeMethod("SelectContentControl", [tagLists[tagExists].InternalId]);
+            }
+        });
+
+        $(document).on('click', '#btnSend', async function () {
+            chat_message = $('#messageInput').val();
+            const addNewContractMessageDetail = {
+                "contractId": documentID,
+                "contractSectionId": selectedThreadID,
+                "message": chat_message,
+                "with": withType,
+                "messageType": 'Normal',
+                "companyId": loggedInUserDetails.company._id,
+                "oppositeCompanyId": counterPartyCustomerDetail.company._id,
+                "threadID": selectedCommentThereadID,
+                "status": 'send',
+                "actionperformedbyUser": loggedInUserDetails.firstName + " " + loggedInUserDetails.lastName,
+                "actionperformedbyUserImage": loggedInUserDetails.imageUrl,
+                "actionperformedbyUserRole": loggedInUserDetails.role,
+                "messageConfirmationFor": messageConfirmationFor,
+                "chatRoomName": withType == 'Our Team' ? 'user_' + selectedCommentThereadID : 'counter_' + selectedCommentThereadID,
+                "messageNumber": 0
+            }
+            await addContractSectionMessage(addNewContractMessageDetail, socket);
+        });
+
+        $(document).on('click', '#btnSendCP', async function () {
+            chat_message = $('#messageInputCP').val();
+            const addNewContractMessageDetail = {
+                "contractId": documentID,
+                "contractSectionId": selectedThreadID,
+                "message": chat_message,
+                "with": withType,
+                "messageType": 'Normal',
+                "companyId": loggedInUserDetails.company._id,
+                "oppositeCompanyId": counterPartyCustomerDetail.company._id,
+                "threadID": selectedCommentThereadID,
+                "status": 'send',
+                "actionperformedbyUser": loggedInUserDetails.firstName + " " + loggedInUserDetails.lastName,
+                "actionperformedbyUserImage": loggedInUserDetails.imageUrl,
+                "actionperformedbyUserRole": loggedInUserDetails.role,
+                "messageConfirmationFor": messageConfirmationFor,
+                "chatRoomName": withType == 'Our Team' ? 'user_' + selectedCommentThereadID : 'counter_' + selectedCommentThereadID,
+                "messageNumber": 0
+            }
+            await addContractSectionMessage(addNewContractMessageDetail, socket);
+        });
+
+        document.getElementById('chatBodyID').onscroll = (e) => {
+            if (document.getElementById('chatBodyID')?.scrollTop == 0 && chatHasNextPage && chatNextPage != 1) {
+                getContractSectionMessageList('our');
+            }
+        };
+
+        document.getElementById('chatCPBodyID').onscroll = (e) => {
+            if (document.getElementById('chatCPBodyID')?.scrollTop == 0 && chatHasNextPage && chatNextPage != 1) {
+                getContractSectionMessageList('Counterparty');
+            }
+        };
+
+        document.getElementById('chatHistoryBodyID').onscroll = (e) => {
+            if (document.getElementById('chatHistoryBodyID')?.scrollTop == 0 && chatHistoryNextPage && chatHistoryNextPage != 1) {
+                getContractSectionMessageHistory();
+            }
+        };
+
 
     };
     /**================================== Plugin Init End =================================*/
@@ -148,337 +505,6 @@
         fClickLabel = false;
     };
     /**================== Plugin event_onTargetPositionChanged End ========================*/
-
-    // Invite counterparty screen
-    $('#btnRedirectInviteCounterpartyForm').on('click', function() {
-        $('#divInviteCounterparty').addClass(displayNoneClass);
-        $('#divInviteCounterpartyForm').removeClass(displayNoneClass);
-    });
-    // Invite counterparty screen
-
-    // Invite counterparty Form screen
-    $('#btnRedirectInviteCounterpartyCancel').on('click', function() {
-        $('#divInviteCounterpartyForm').addClass(displayNoneClass);
-        $('#divInviteCounterparty').removeClass(displayNoneClass);
-    });
-    // Invite counterparty Form screen
-
-    // Invite counterparty Pending screen
-    $('#btnResendVerification').on('click', function() {
-        resendCounterpartyInvitation();
-    });
-
-    $('#btnCancelInvitation').on('click', function() {
-        cancelInvitation();
-    });
-    // Invite counterparty Pending screen
-
-    // Contract clause lists screen
-    $('#btnCreateClause').on('click', function() {
-        if (text) {
-            $('#divContractLists').addClass(displayNoneClass);
-            $('#divContractCreate').removeClass(displayNoneClass);
-            toggleInviteUsersDivShow = true;
-        }
-    });
-
-    $('#btnMarkupMode').on('click', function() {
-        let data = {
-            chatRoomName: loggedInUserDetails.userWebId + "_" + documentID,
-            documentMode: documentMode == 'markup' ? 'edit' : 'markup'
-        };
-        socket.emit('switch_document_mode', data);
-    });
-    // Contract clause lists screen
-
-    // Create contract clause screen
-    $('.btn-redirect-contract-list').on('click', function() {
-        $('#divContractLists').removeClass(displayNoneClass);
-        $('#divContractCreate').addClass(displayNoneClass);
-    });
-
-    /*$('#btnContractCreateCancel').on('click', function() {
-        $('#divContractLists').removeClass(displayNoneClass);
-        $('#divContractCreate').addClass(displayNoneClass);
-    });*/
-    // Create contract clause screen
-
-    // Contract chat history screen
-    $('#btnRedirectClauseListsA').on('click', function() {
-        selectedCommentThereadID = '';
-        $('.div-selected').removeClass('div-selected');
-        getContractSectionList();
-        $('#divContractLists').removeClass(displayNoneClass);
-        $('#divContractChatHistory').addClass(displayNoneClass);
-    });
-
-    $('#btnGoToSameSideChat').on('click', async function() {
-        withType = 'Our Team';
-        messageConfirmationFor = 'Same Side';
-        document.getElementById('chatArea').innerHTML = '';
-        chatNextPage = 1;
-        chatHasNextPage = true;
-        await getContractSectionMessageList('our');
-        let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
-        socket.emit('join_contract_section_chat_room', chatRoomName);
-        $('#divContractSameSideChat').removeClass(displayNoneClass);
-        $('#divContractChatHistory').addClass(displayNoneClass);
-    });
-
-    $('#btnGoToCounterparty').on('click', async function() {
-        withType = 'Counterparty';
-        messageConfirmationFor = 'Opposite Side';
-        document.getElementById('chatCPArea').innerHTML = '';
-        chatNextPage = 1;
-        chatHasNextPage = true;
-        await getContractSectionMessageList('Counterparty');
-        let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
-        socket.emit('join_contract_section_chat_room', chatRoomName);
-        $('#divContractCounterpartyChat').removeClass(displayNoneClass);
-        $('#divContractChatHistory').addClass(displayNoneClass);
-    });
-    // Contract chat history screen
-
-    // Contract sameside chat screen
-    $('#messageInput').on('click', function() {
-        var data = {
-            chatRoomName: withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID,
-            userName: loggedInUserDetails.firstName,
-            with: withType
-        };
-        user_is_typing_contract_section(socket, data);
-    });
-
-    $('#messageInputCP').on('click', function() {
-        var data = {
-            chatRoomName: withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID,
-            userName: loggedInUserDetails.firstName,
-            with: withType
-        };
-        user_is_typing_contract_section(socket, data);
-    });
-
-    $('#inviteEmailAddress').on('keydown', function() {
-        $('.api-error').remove();
-    });
-
-    $('#btnGoToConversionHistory').on('click', function() {
-        chatHistoryNextPage = 1;
-        chatHistoryHasNextPage = true;
-        getContractSectionMessageHistory();
-        $('#divContractSameSideChat').addClass(displayNoneClass);
-        $('#divContractChatHistory').removeClass(displayNoneClass);
-    });
-
-    $('#btnGoToConversionHistoryA').on('click', function() {
-        chatHistoryNextPage = 1;
-        chatHistoryHasNextPage = true;
-        getContractSectionMessageHistory();
-        $('#divContractSameSideChat').addClass(displayNoneClass);
-        $('#divContractChatHistory').removeClass(displayNoneClass);
-    });
-
-    $('#btnGoToSameSideA').on('click', async function() {
-        withType = 'Our Team';
-        messageConfirmationFor = 'Same Side';
-        $('#chatArea').innerHTML = '';
-        chatNextPage = 1;
-        chatHasNextPage = true;
-        await getContractSectionMessageList('our');
-        let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
-        socket.emit('join_contract_section_chat_room', chatRoomName);
-        $('#divContractCounterpartyChat').addClass(displayNoneClass);
-        $('#divContractSameSideChat').removeClass(displayNoneClass);
-    });
-
-    $('#btnGoToCounterpartyA').on('click', async function() {
-        withType = 'Counterparty';
-        messageConfirmationFor = 'Opposite Side';
-        $('#chatCPArea').innerHTML = '';
-        chatNextPage = 1;
-        chatHasNextPage = true;
-        await getContractSectionMessageList('Counterparty');
-        let chatRoomName = withType == 'Our Team' ? 'user_' + selectedCommentThereadID : "counter_" + selectedCommentThereadID;
-        socket.emit('join_contract_section_chat_room', chatRoomName);
-        $('#divContractSameSideChat').addClass(displayNoneClass);
-        $('#divContractCounterpartyChat').removeClass(displayNoneClass);
-    });
-
-    $('#btnRedirectClauseListsB').on('click', function() {
-        selectedCommentThereadID = '';
-        $('.div-selected').removeClass('div-selected');
-        getContractSectionList();
-        $('#divContractLists').removeClass(displayNoneClass);
-        $('#divContractSameSideChat').addClass(displayNoneClass);
-    });
-
-    $('#btnRedirectClauseListsC').on('click', function() {
-        selectedCommentThereadID = '';
-        $('.div-selected').removeClass('div-selected');
-        getContractSectionList();
-        $('#divContractLists').removeClass(displayNoneClass);
-        $('#divContractCounterpartyChat').addClass(displayNoneClass);
-    });
-    // Contract sameside chat screen
-
-    // Toggle inviteuser tabs view
-    $('#inviteUsersInput').on('click', function() {
-        if(toggleInviteUsersDivShow) {
-            $('#inviteUsersBox').removeClass(displayNoneClass);
-        } else {
-            $('#inviteUsersBox').addClass(displayNoneClass);
-        }
-        toggleInviteUsersDivShow = !toggleInviteUsersDivShow;
-    });
-
-    // Clause Lazyload functionality
-    $('#contractListItemsDiv').on('scroll', function() {
-        if ($('#contractListItemsDiv').scrollTop + $('#contractListItemsDiv').offsetHeight >= $('#contractListItemsDiv').scrollHeight) {
-            if (clauseHasNextPage) {
-                getContractSectionList();
-            }
-        }
-    })
-
-    // Clause listing screen - Search input
-    $('#inputSearchbox').on('keyup', function () {
-        clearTimeout(searchTimeout); // Clear any existing timeout
-
-        // Set a new timeout to call performSearch after 800 milliseconds (adjust as needed)
-        searchTimeout = setTimeout(function () {
-            if (searchText != event.target.value.trim()) {
-                $('#contractListItemsDiv').innerHTML = '';
-                searchText = event.target.value.trim();
-                clauseNextPage = 1;
-                clauseHasNextPage = true;
-                getContractSectionList();
-            } else {
-                searchText = '';
-                clauseNextPage = 1;
-                clauseHasNextPage = true;
-                getContractSectionList();
-            }
-        }, 500);
-    });
-
-
-    /** Invite counterparty form submit */
-    $("#inviteForm").validate({
-        submitHandler: function (form) {
-            // $(form).ajaxSubmit();
-            inviteCounterparties();
-        }
-    });
-
-    /** Clause create form submit */
-    $("#clauseForm").validate({
-        submitHandler: function (form) {
-            createClauseSection(socket);
-        }
-    });
-
-    $(document).on('click', '#inviteteams', function () {
-        $('.team-chkbox').prop('checked', this.checked);
-        updateInviteTeamCheckbox();
-    });
-
-    $(document).on('click', '.team-chkbox', function () {
-        var allChecked = $('.team-chkbox:checked').length === $('.team-chkbox').length;
-        $('#inviteteams').prop('checked', allChecked);
-        updateInviteTeamCheckbox();
-    });
-
-    $(document).on('click', '#inviteusers', function () {
-        $('.user-chkbox').prop('checked', this.checked);
-        updateInviteUserCheckbox();
-    })
-
-    $(document).on('click', '.user-chkbox', function () {
-        var allChecked = $('.user-chkbox:checked').length === $('.user-chkbox').length;
-        $('#inviteusers').prop('checked', allChecked);
-        updateInviteUserCheckbox();
-    });
-
-    $(document).on('click', '.contract-item', async function () {
-        fClickLabel = true;
-        var elementID = $(this).attr('id');
-        let tagExists = tagLists.findIndex((ele) => +ele.Id == +elementID);
-        if (tagExists > -1) {
-            selectedCommentThereadID = tagLists[tagExists].Tag;
-            selectedThreadID = $(this).data('id');
-            chatHistoryNextPage = 1;
-            chatHistoryHasNextPage = true;
-            getContractSectionMessageHistory();
-            let chatRoomName = 'conversion_history_' + selectedCommentThereadID;
-            socket.emit('join_contract_section_chat_room', chatRoomName);
-            $('#divContractLists').addClass(displayNoneClass);
-            $('#divContractChatHistory').removeClass(displayNoneClass);
-            // window.Asc.plugin.executeMethod("SelectContentControl", [tagLists[tagExists].InternalId]);
-        }
-    });
-
-    $(document).on('click', '#btnSend', async function () {
-        chat_message = $('#messageInput').val();
-        const addNewContractMessageDetail = {
-            "contractId": documentID,
-            "contractSectionId": selectedThreadID,
-            "message": chat_message,
-            "with": withType,
-            "messageType": 'Normal',
-            "companyId": loggedInUserDetails.company._id,
-            "oppositeCompanyId": counterPartyCustomerDetail.company._id,
-            "threadID": selectedCommentThereadID,
-            "status": 'send',
-            "actionperformedbyUser": loggedInUserDetails.firstName + " " + loggedInUserDetails.lastName,
-            "actionperformedbyUserImage": loggedInUserDetails.imageUrl,
-            "actionperformedbyUserRole": loggedInUserDetails.role,
-            "messageConfirmationFor": messageConfirmationFor,
-            "chatRoomName": withType == 'Our Team' ? 'user_' + selectedCommentThereadID : 'counter_' + selectedCommentThereadID,
-            "messageNumber": 0
-        }
-        await addContractSectionMessage(addNewContractMessageDetail, socket);
-    });
-
-    $(document).on('click', '#btnSendCP', async function () {
-        chat_message = $('#messageInputCP').val();
-        const addNewContractMessageDetail = {
-            "contractId": documentID,
-            "contractSectionId": selectedThreadID,
-            "message": chat_message,
-            "with": withType,
-            "messageType": 'Normal',
-            "companyId": loggedInUserDetails.company._id,
-            "oppositeCompanyId": counterPartyCustomerDetail.company._id,
-            "threadID": selectedCommentThereadID,
-            "status": 'send',
-            "actionperformedbyUser": loggedInUserDetails.firstName + " " + loggedInUserDetails.lastName,
-            "actionperformedbyUserImage": loggedInUserDetails.imageUrl,
-            "actionperformedbyUserRole": loggedInUserDetails.role,
-            "messageConfirmationFor": messageConfirmationFor,
-            "chatRoomName": withType == 'Our Team' ? 'user_' + selectedCommentThereadID : 'counter_' + selectedCommentThereadID,
-            "messageNumber": 0
-        }
-        await addContractSectionMessage(addNewContractMessageDetail, socket);
-    });
-
-    $('#chatBodyID').onscroll = (e) => {
-        if ($('#chatBodyID')?.scrollTop == 0 && chatHasNextPage && chatNextPage != 1) {
-            getContractSectionMessageList('our');
-        }
-    };
-
-    $('#chatCPBodyID').onscroll = (e) => {
-        if ($('#chatCPBodyID')?.scrollTop == 0 && chatHasNextPage && chatNextPage != 1) {
-            getContractSectionMessageList('Counterparty');
-        }
-    };
-
-    $('#chatHistoryBodyID').onscroll = (e) => {
-        if ($('#chatHistoryBodyID')?.scrollTop == 0 && chatHistoryNextPage && chatHistoryNextPage != 1) {
-            getContractSectionMessageHistory();
-        }
-    };
-
 
     /**============================== Utils Function Start ================================*/
     /**
@@ -560,7 +586,7 @@
         if (placeholderTextArray.length > 0) {
             placeholderText = placeholderTextArray.join(' and ') + ' Selected';
         }
-        $('#inviteUsersInput').placeholder = placeholderText;
+        document.getElementById('inviteUsersInput').placeholder = placeholderText;
     }
 
     /**
@@ -834,38 +860,38 @@
                     }
                     flagInit = true;
                     if (responseData.data.invitationDetail && responseData.data.invitationDetail._id) {
-                        $('#divInviteCounterparty').addClass(displayNoneClass);
-                        $('#divInviteCounterpartyPending').removeClass(displayNoneClass);
-                        $('#organizationName').textContent = responseData.data.invitationDetail.organizationName;
-                        $('#counterpartyName').textContent = responseData.data.invitationDetail.firstName + " " + responseData.data.invitationDetail.lastName;
+                        document.getElementById('divInviteCounterparty').classList.add(displayNoneClass);
+                        document.getElementById('divInviteCounterpartyPending').classList.remove(displayNoneClass);
+                        document.getElementById('organizationName').textContent = responseData.data.invitationDetail.organizationName;
+                        document.getElementById('counterpartyName').textContent = responseData.data.invitationDetail.firstName + " " + responseData.data.invitationDetail.lastName;
                     } else if (responseData.data.oppositeUser && responseData.data.oppositeUser._id) {
                         loggedInUserDetails = responseData.data.loggedInUserDetails;
                         counterPartyCustomerDetail = responseData.data.oppositeUser;
-                        $('#divInviteCounterpartyPending').addClass(displayNoneClass);
-                        $('#divInviteCounterparty').addClass(displayNoneClass);
-                        $('#invitationActionPara').addClass(displayNoneClass);
-                        $('#divContractLists').removeClass(displayNoneClass);
-                        $('#contractCounterpartySection').removeClass(disabledClass);
-                        $('#userProfileImage').src = responseData.data.loggedInUserDetails.imageUrl;
-                        $('#userProfileImageA').src = responseData.data.loggedInUserDetails.imageUrl ?? 'images/no-profile-image.jpg';
-                        $('#userProfileImageB').src = responseData.data.loggedInUserDetails.imageUrl ?? 'images/no-profile-image.jpg';
-                        $('#counterpartyImage').src = responseData.data.oppositeUser.imageUrl;
-                        $('#organizationImage').src = responseData.data.oppositeUser.company.imageUrl;
-                        $('#userProfileName').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
-                        $('#userProfileNameA').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
-                        $('#userProfileNameB').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
-                        $('#userProfilerole').textContent = responseData.data.loggedInUserDetails.role;
-                        $('#userProfileroleA').textContent = responseData.data.loggedInUserDetails.role;
-                        $('#userProfileroleB').textContent = responseData.data.loggedInUserDetails.role;
-                        $('#organizationName').textContent = responseData.data.oppositeUser.company.companyName;
-                        $('#counterpartyName').textContent = responseData.data.oppositeUser.firstName + " " + responseData.data.oppositeUser.lastName;
+                        document.getElementById('divInviteCounterpartyPending').classList.add(displayNoneClass);
+                        document.getElementById('divInviteCounterparty').classList.add(displayNoneClass);
+                        document.getElementById('invitationActionPara').classList.add(displayNoneClass);
+                        document.getElementById('divContractLists').classList.remove(displayNoneClass);
+                        document.getElementById('contractCounterpartySection').classList.remove(disabledClass);
+                        document.getElementById('userProfileImage').src = responseData.data.loggedInUserDetails.imageUrl;
+                        document.getElementById('userProfileImageA').src = responseData.data.loggedInUserDetails.imageUrl ?? 'images/no-profile-image.jpg';
+                        document.getElementById('userProfileImageB').src = responseData.data.loggedInUserDetails.imageUrl ?? 'images/no-profile-image.jpg';
+                        document.getElementById('counterpartyImage').src = responseData.data.oppositeUser.imageUrl;
+                        document.getElementById('organizationImage').src = responseData.data.oppositeUser.company.imageUrl;
+                        document.getElementById('userProfileName').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
+                        document.getElementById('userProfileNameA').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
+                        document.getElementById('userProfileNameB').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
+                        document.getElementById('userProfilerole').textContent = responseData.data.loggedInUserDetails.role;
+                        document.getElementById('userProfileroleA').textContent = responseData.data.loggedInUserDetails.role;
+                        document.getElementById('userProfileroleB').textContent = responseData.data.loggedInUserDetails.role;
+                        document.getElementById('organizationName').textContent = responseData.data.oppositeUser.company.companyName;
+                        document.getElementById('counterpartyName').textContent = responseData.data.oppositeUser.firstName + " " + responseData.data.oppositeUser.lastName;
                         if (documentMode != 'markup') {
                             getContractTeamAndUserList();
                         }
                         getContractSectionList();
                         setupSocket();
                     } else if ((responseData.data.openContractDetails && responseData.data.openContractDetails.counterPartyInviteStatus && responseData.data.openContractDetails.counterPartyInviteStatus == 'Pending') || responseData.data.counterPartyInviteStatus == 'Pending') {
-                        $('#divInviteCounterparty').removeClass(displayNoneClass);
+                        document.getElementById('divInviteCounterparty').classList.remove(displayNoneClass);
                     }
                 }
             })
@@ -930,7 +956,7 @@
                         html += '</ul>\n';
                         html += '</div>';
                         //accordionBodyTeams
-                        $('#accordionBodyTeams').innerHTML = html;
+                        document.getElementById('accordionBodyTeams').innerHTML = html;
                     }
                     if (userLists.length > 0) {
                         inviteUserListIDs = userLists;
@@ -967,7 +993,7 @@
                         });
                         html += '</ul>';
                         html += '</div>';
-                        $('#accordionBodyUsers').innerHTML = html;
+                        document.getElementById('accordionBodyUsers').innerHTML = html;
                     }
                 }
             })
@@ -1012,7 +1038,7 @@
                 const responseData = data;
                 if (responseData && responseData.data) {
                     const resData = responseData.data;
-                    $('#contractListItemsDiv').innerHTML = '';
+                    document.getElementById('contractListItemsDiv').innerHTML = '';
                     if (resData.data.length > 0) {
                         clauseHasNextPage = resData.hasNextPage;
                         clauseNextPage = resData.nextPage;
@@ -1074,10 +1100,10 @@
                                 '\t\t\t</a>\n' +
                                 '</div>';
                         });
-                        $('#contractListItemsDiv').innerHTML += html;
+                        document.getElementById('contractListItemsDiv').innerHTML += html;
                     } else {
                         let norecordhtml = '<p class="nodata-info">No clause available</p>';
-                        $('#contractListItemsDiv').innerHTML = norecordhtml;
+                        document.getElementById('contractListItemsDiv').innerHTML = norecordhtml;
                     }
                 }
             })
@@ -1114,12 +1140,12 @@
                 // Handle the response data
                 const responseData = data;
                 if (responseData && responseData.status == true && responseData.code == 200) {
-                    $("#inviteForm").reset();
-                    $('divInviteCounterpartyPending').removeClass(displayNoneClass);
-                    $('divInviteCounterpartyForm').addClass(displayNoneClass);
+                    document.getElementById("inviteForm").reset();
+                    document.getElementById('divInviteCounterpartyPending').classList.remove(displayNoneClass);
+                    document.getElementById('divInviteCounterpartyForm').classList.add(displayNoneClass);
                     if (responseData.data && responseData.data._id) {
-                        $('#organizationName').textContent = responseData.data.organizationName;
-                        $('#counterpartyName').textContent = responseData.data.firstName + " " + responseData.data.lastName;
+                        document.getElementById('organizationName').textContent = responseData.data.organizationName;
+                        document.getElementById('counterpartyName').textContent = responseData.data.firstName + " " + responseData.data.lastName;
                     } else {
                         getOpenContractUserDetails();
                     }
@@ -1154,8 +1180,8 @@
                     // Handle the response data
                     const responseData = data;
                     if (responseData && responseData.status == true && responseData.code == 200) {
-                        $('#divInviteCounterpartyPending').addClass(displayNoneClass);
-                        $('#divInviteCounterparty').removeClass(displayNoneClass);
+                        document.getElementById('divInviteCounterpartyPending').classList.add(displayNoneClass);
+                        document.getElementById('divInviteCounterparty').classList.remove(displayNoneClass);
                     } else {
 
                     }
@@ -1260,9 +1286,9 @@
                         }
                         socket.emit('new_clause_created', data);
                         location.reload(true);
-                        $('#divContractChatHistory').addClass(displayNoneClass);
-                        $('#divContractCreate').addClass(displayNoneClass);
-                        $('#divContractLists').removeClass(displayNoneClass);
+                        document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
+                        document.getElementById('divContractCreate').classList.add(displayNoneClass);
+                        document.getElementById('divContractLists').classList.remove(displayNoneClass);
                     }
                 })
                 .catch(error => {
@@ -1398,7 +1424,7 @@
                             let result;
                             if (chatNextPage == 1) {
                                 if (messageType == 'our') {
-                                    $('#chatArea').innerHTML = '';
+                                    document.getElementById('chatArea').innerHTML = '';
                                     result = responseData?.data?.data.reverse();
                                     const myDiv = document.getElementById("chatBodyID");
                                     const scrollToOptions = {
@@ -1407,7 +1433,7 @@
                                     };
                                     myDiv.scrollTo(scrollToOptions);
                                 } else {
-                                    $('#chatCPArea').innerHTML = '';
+                                    document.getElementById('chatCPArea').innerHTML = '';
                                     result = responseData?.data?.data.reverse();
                                     const myDiv = document.getElementById("chatCPBodyID");
                                     const scrollToOptions = {
@@ -1421,9 +1447,9 @@
                             }
                             let setLastHeight;
                             if (messageType == 'our') {
-                                setLastHeight = $('#chatArea').scrollHeight;
+                                setLastHeight = document.getElementById('chatArea').scrollHeight;
                             } else {
-                                setLastHeight = $('#chatCPArea').scrollHeight;
+                                setLastHeight = document.getElementById('chatCPArea').scrollHeight;
                             }
                             result.forEach((chatMessage) => {
                                 let html = '';
@@ -1495,9 +1521,9 @@
                                 myDiv.scrollTo(scrollToOptions);
                             } else {
                                 if (messageType == 'our') {
-                                    $('#chatBodyID').scrollTop = $('#chatArea').scrollHeight - setLastHeight;
+                                    document.getElementById('chatBodyID').scrollTop = document.getElementById('chatArea').scrollHeight - setLastHeight;
                                 } else {
-                                    $('#chatCPBodyID').scrollTop = $('#chatCPArea').scrollHeight - setLastHeight;
+                                    document.getElementById('chatCPBodyID').scrollTop = document.getElementById('chatCPArea').scrollHeight - setLastHeight;
                                 }
                             }
                             chatHasNextPage = responseData.data.hasNextPage;
@@ -1546,7 +1572,7 @@
                         if (responseData.data.data.length > 0) {
                             let result;
                             if (chatHistoryNextPage == 1) {
-                                $('#chatHistoryArea').innerHTML = '';
+                                document.getElementById('chatHistoryArea').innerHTML = '';
                                 result = responseData?.data?.data.reverse();
                                 const myDiv = document.getElementById("chatHistoryBodyID");
                                 const scrollToOptions = {
@@ -1557,7 +1583,7 @@
                             } else {
                                 result = responseData?.data?.data;
                             }
-                            let setLastHeight = $('#chatHistoryArea').scrollHeight;
+                            let setLastHeight = document.getElementById('chatHistoryArea').scrollHeight;
                             result.forEach((chatMessage) => {
                                 let html = '';
                                 if (chatMessage.messageConfirmationFor == 'Same Side') {
@@ -1606,12 +1632,12 @@
                             if (chatHistoryNextPage == 1) {
                                 myDiv.scrollTo(scrollToOptions);
                             } else {
-                                $('#chatHistoryBodyID').scrollTop = $('#chatHistoryArea').scrollHeight - setLastHeight;
+                                document.getElementById('chatHistoryBodyID').scrollTop = document.getElementById('chatHistoryArea').scrollHeight - setLastHeight;
                             }
                             chatHistoryHasNextPage = responseData.data.hasNextPage;
                             chatHistoryNextPage = responseData.data.nextPage;
                         } else {
-                            $('#chatHistoryArea').innerHTML = '';
+                            document.getElementById('chatHistoryArea').innerHTML = '';
                         }
                     }
                 })
