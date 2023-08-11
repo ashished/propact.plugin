@@ -212,7 +212,7 @@
         $('#divContractChatHistory').addClass(displayNoneClass);
     });
 
-    $('#btnGoToSameSideChat').on('click', function() {
+    $('#btnGoToSameSideChat').on('click', async function() {
         withType = 'Our Team';
         messageConfirmationFor = 'Same Side';
         document.getElementById('chatArea').innerHTML = '';
@@ -225,7 +225,7 @@
         $('#divContractChatHistory').addClass(displayNoneClass);
     });
 
-    $('#btnGoToCounterparty').on('click', function() {
+    $('#btnGoToCounterparty').on('click', async function() {
         withType = 'Counterparty';
         messageConfirmationFor = 'Opposite Side';
         document.getElementById('chatCPArea').innerHTML = '';
