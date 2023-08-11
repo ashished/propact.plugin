@@ -348,7 +348,7 @@
         /** Clause create form submit */
         $("#clauseForm").validate({
             submitHandler: function (form) {
-                createClauseSection();
+                createClauseSection(socket);
             }
         });
 
@@ -652,6 +652,9 @@
             let chatRoomName = loggedInUserDetails.userWebId + "_" + documentID;
             socket.emit('join_chat_room', chatRoomName);
 
+            let documentChatRoomName = documentID;
+            socket.emit('join_chat_room', documentChatRoomName);
+
             function user_is_typing_contract_section(socket, data) {
                 socket.emit('user_is_typing_contract_section', data);
             }
@@ -809,6 +812,12 @@
                 newHistoryElement.innerHTML = htmlHistory;
                 contentHistoryDiv.appendChild(newHistoryElement);
             });
+
+            socket.on('forward_new_clause_create', data => {
+                if (data) {
+                    console.log('__data', data);
+                }
+            })
 
             // Handle connection errors
             socket.on('connect_error', (error) => {
@@ -1231,7 +1240,7 @@
     /**
      * @desc Create clause section
      */
-    function createClauseSection() {
+    function createClauseSection(socket) {
         try {
             var randomNumber = Math.floor(Math.random() * (1000000 - 1 + 1)) + 1;
             var commentID = Date.now() + '-' + randomNumber;
@@ -1280,6 +1289,11 @@
                         var sDocumentEditingRestrictions = "readOnly";
                         window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
                         getContractSectionList();
+                        let data = {
+                            chatRoomName: documentID,
+                            clauseCreated: true
+                        }
+                        socket.emit('new_clause_created', data);
                         location.reload(true);
                         document.getElementById('divContractChatHistory').classList.add(displayNoneClass);
                         document.getElementById('divContractCreate').classList.add(displayNoneClass);
