@@ -770,7 +770,7 @@
                         '   </div>\n' +
                         '</div>\n';
                 }
-                var contentDiv = document.getElementById("chatArea");
+                var contentDiv = document.getElementById("chatCPArea");
                 var newElement = document.createElement("div");
                 newElement.innerHTML = html;
                 contentDiv.appendChild(newElement);
@@ -1326,8 +1326,13 @@
                         generalChatData.chatRoomName = 'conversion_history_' + selectedCommentThereadID;
                         socket.emit('conversion_history_message', generalChatData);
 
-                        const myTextarea = document.getElementById("messageInput");
-                        myTextarea.value = "";
+                        if (postData.with == "Counterparty") {
+                            const myTextarea = document.getElementById("messageInputCP");
+                            myTextarea.value = "";
+                        } else {
+                            const myTextarea = document.getElementById("messageInput");
+                            myTextarea.value = "";
+                        }
 
                         let html = '';
                         html += '<div class="message-wrapper reverse ' + (postData.with == "Counterparty" ? "light-gold-color" : "") + ' ">\n' +
@@ -1342,17 +1347,31 @@
                             '   </div>\n' +
                             '</div>\n';
 
-                        var contentDiv = document.getElementById("chatArea");
-                        var newElement = document.createElement("div");
-                        newElement.innerHTML = html;
-                        contentDiv.appendChild(newElement);
+                        if (postData.with == "Counterparty") {
+                            var contentDiv = document.getElementById("chatCPArea");
+                            var newElement = document.createElement("div");
+                            newElement.innerHTML = html;
+                            contentDiv.appendChild(newElement);
 
-                        const myDiv = document.getElementById("chatBodyID");
-                        const scrollToOptions = {
-                            top: myDiv.scrollHeight,
-                            behavior: 'smooth'
-                        };
-                        myDiv.scrollTo(scrollToOptions);
+                            const myDiv = document.getElementById("chatCPBodyID");
+                            const scrollToOptions = {
+                                top: myDiv.scrollHeight,
+                                behavior: 'smooth'
+                            };
+                            myDiv.scrollTo(scrollToOptions);
+                        } else {
+                            var contentDiv = document.getElementById("chatArea");
+                            var newElement = document.createElement("div");
+                            newElement.innerHTML = html;
+                            contentDiv.appendChild(newElement);
+
+                            const myDiv = document.getElementById("chatBodyID");
+                            const scrollToOptions = {
+                                top: myDiv.scrollHeight,
+                                behavior: 'smooth'
+                            };
+                            myDiv.scrollTo(scrollToOptions);
+                        }
 
                         return true;
                     }
