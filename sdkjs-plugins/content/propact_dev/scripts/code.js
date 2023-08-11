@@ -816,6 +816,7 @@
             socket.on('forward_new_clause_create', data => {
                 if (data) {
                     console.log('__data', data);
+                    getContractSectionList();
                 }
             })
 
