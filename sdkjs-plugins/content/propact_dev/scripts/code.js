@@ -454,6 +454,28 @@
             }
         };
 
+        document.getElementById('btnInviteUsers').addEventListener('click', function() {
+            let variation = {
+                url : location.href.replace(file, 'modal.html'),
+                description : window.Asc.plugin.tr('Warning'),
+                isVisual : true,
+                isModal : true,
+                EditorsSupport : ['word', 'cell', 'slide'],
+                size : [350, 100],
+                buttons : [
+                    {
+                        'text': window.Asc.plugin.tr('Yes'),
+                        'primary': true
+                    },
+                    {
+                        'text': window.Asc.plugin.tr('No'),
+                        'primary': false
+                    }
+                ]
+            };
+            window.Asc.plugin.executeMethod ("ShowWindow", ["iframe_asc.{BE5CBF95-C0AD-4842-B157-AC40FEDD9841}", variation]);
+        });
+
 
     };
     /**================================== Plugin Init End =================================*/
@@ -874,15 +896,15 @@
                         document.getElementById('contractCounterpartySection').classList.remove(disabledClass);
                         document.getElementById('userProfileImage').src = responseData.data.loggedInUserDetails.imageUrl;
                         document.getElementById('userProfileImageA').src = responseData.data.loggedInUserDetails.imageUrl ?? 'images/no-profile-image.jpg';
-                        document.getElementById('userProfileImageB').src = responseData.data.loggedInUserDetails.imageUrl ?? 'images/no-profile-image.jpg';
+                        document.getElementById('oppsiteUserProfileImage').src = responseData.data.oppositeUser.imageUrl ?? 'images/no-profile-image.jpg';
                         document.getElementById('counterpartyImage').src = responseData.data.oppositeUser.imageUrl;
                         document.getElementById('organizationImage').src = responseData.data.oppositeUser.company.imageUrl;
                         document.getElementById('userProfileName').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
                         document.getElementById('userProfileNameA').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
-                        document.getElementById('userProfileNameB').textContent = responseData.data.loggedInUserDetails.firstName + " " + responseData.data.loggedInUserDetails.lastName;
+                        document.getElementById('oppsiteUserProfileName').textContent = responseData.data.oppositeUser.firstName + " " + responseData.data.oppositeUser.lastName;
                         document.getElementById('userProfilerole').textContent = responseData.data.loggedInUserDetails.role;
                         document.getElementById('userProfileroleA').textContent = responseData.data.loggedInUserDetails.role;
-                        document.getElementById('userProfileroleB').textContent = responseData.data.loggedInUserDetails.role;
+                        document.getElementById('oppsiteUserProfilerole').textContent = responseData.data.oppositeUser.role;
                         document.getElementById('organizationName').textContent = responseData.data.oppositeUser.company.companyName;
                         document.getElementById('counterpartyName').textContent = responseData.data.oppositeUser.firstName + " " + responseData.data.oppositeUser.lastName;
                         if (documentMode != 'markup') {
