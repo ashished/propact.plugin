@@ -456,7 +456,7 @@
 
         document.getElementById('btnInviteUsers').addEventListener('click', function() {
             let variation = {
-                url : location.href.replace(file, 'modal.html'),
+                url : location.href.replace('index.html', 'modal.html'),
                 description : window.Asc.plugin.tr('Warning'),
                 isVisual : true,
                 isModal : true,
