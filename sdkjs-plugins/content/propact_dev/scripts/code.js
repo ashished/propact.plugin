@@ -457,21 +457,11 @@
         document.getElementById('btnInviteUsers').addEventListener('click', function() {
             let variation = {
                 url : location.href.replace('index.html', 'modal.html'),
-                description : window.Asc.plugin.tr('Warning'),
+                description : window.Asc.plugin.tr('Invite Users'),
                 isVisual : true,
                 isModal : true,
                 EditorsSupport : ['word', 'cell', 'slide'],
-                size : [350, 100],
-                buttons : [
-                    {
-                        'text': window.Asc.plugin.tr('Yes'),
-                        'primary': true
-                    },
-                    {
-                        'text': window.Asc.plugin.tr('No'),
-                        'primary': false
-                    }
-                ]
+                size : [550, 300]
             };
             window.Asc.plugin.executeMethod ("ShowWindow", ["iframe_asc.{BE5CBF95-C0AD-4842-B157-AC40FEDD9841}", variation]);
         });
