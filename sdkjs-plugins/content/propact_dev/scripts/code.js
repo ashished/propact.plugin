@@ -522,9 +522,22 @@
             window.Asc.plugin.executeMethod ("ShowWindow", ["iframe_asc.{BE5CBF95-C0AD-4842-B157-AC40FEDD9841}", variation]);
         });
 
-
     };
     /**================================== Plugin Init End =================================*/
+
+
+    window.Asc.plugin.button = function(id, windowId) {
+        if (!modalWindow)
+            return;
+
+        if (windowId) {
+            switch (id) {
+                case -1:
+                default:
+                    window.Asc.plugin.executeMethod('CloseWindow', [windowId]);
+            }
+        }
+    };
 
     /**=========================== Plugin onMethodReturn Start ============================*/
     window.Asc.plugin.onMethodReturn = function (returnValue) {
