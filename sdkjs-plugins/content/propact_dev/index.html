@@ -259,18 +259,19 @@
                                 <div class="invite-user-tabs-header">
                                     <ul class="nav nav-tabs" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active" data-bs-toggle="tab" href="#users-tabs">Users</a>
+                                            <a class="nav-link active" data-bs-toggle="tab" href="#usersTabs">Users</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" data-bs-toggle="tab" href="#user-teams">Teams</a>
+                                            <a class="nav-link" data-bs-toggle="tab" href="#userTeams">Teams</a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="invite-user-tabs-body">
                                     <div class="tab-content">
-                                        <div id="users-tabs" class="tab-pane active">
+                                        <div id="usersTabs" class="tab-pane active">
                                             <div class="invite-user-list">
-                                                <ul>
+                                                <div id="userTabContent">
+                                                <!--<ul>
                                                     <li>
                                                         <div class="invite-user-inner">
                                                             <div class="invite-user-icon">
@@ -282,18 +283,8 @@
                                                             </div>
                                                         </div>
                                                     </li>
-                                                    <li>
-                                                        <div class="invite-user-inner">
-                                                            <div class="invite-user-icon">
-                                                                <img src="images/henderson.png" alt="">
-                                                            </div>
-                                                            <div class="invite-user-name">
-                                                                <h3>Johnny Henderson</h3>
-                                                                <span>Legal Adviser</span>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </ul>
+                                                </ul>-->
+                                                </div>
                                                 <div class="invite-btn">
                                                     <button class="btn btn-primary">
                                                         <img src="images/invite-user-btn-icon.svg" id="btnInviteUsers"
@@ -302,8 +293,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="user-teams" class="tab-pane">
-                                            <div class="user-teams-list">
+                                        <div id="userTeams" class="tab-pane">
+                                            <div class="user-teams-list invite-user-list">
+                                                <div id="teamTabContent">
+                                                </div>
+                                                <div class="invite-btn">
+                                                    <button class="btn btn-primary">
+                                                        <img src="images/invite-user-btn-icon.svg" id="btnInviteUserTeams"
+                                                             alt="invite team btn icon"> Invite
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

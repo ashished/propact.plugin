@@ -42,6 +42,7 @@
     var searchText = '';
     var searchTimeout;
     let tagLists = [];
+    let clauseLists = [];
     var selectedCommentThereadID = '';
     var selectedThreadID = '';
     var loggedInUserDetails;
@@ -326,11 +327,13 @@
                     searchText = event.target.value.trim();
                     clauseNextPage = 1;
                     clauseHasNextPage = true;
+                    clauseLists = [];
                     getContractSectionList();
                 } else {
                     searchText = '';
                     clauseNextPage = 1;
                     clauseHasNextPage = true;
+                    clauseLists = [];
                     getContractSectionList();
                 }
             }, 500);
@@ -389,6 +392,59 @@
                 document.getElementById('divContractLists').classList.add(displayNoneClass);
                 document.getElementById('divContractChatHistory').classList.remove(displayNoneClass);
                 // window.Asc.plugin.executeMethod("SelectContentControl", [tagLists[tagExists].InternalId]);
+                let getClauseDetails = clauseLists.find((ele) => ele._id == selectedThreadID);
+                console.log('getClauseDetails', getClauseDetails);
+                if (getClauseDetails && getClauseDetails._id) {
+                    if (getClauseDetails.assignedUser && getClauseDetails.assignedUser.length > 0) {
+                        let iHtml = '<ul>';
+                        getClauseDetails.assignedUser.forEach((ele) => {
+                            let userDetails = inviteUserListIDs.find((el) => el._id == ele._id);
+                            console.log('userDetails', userDetails);
+                            if (userDetails) {
+                                iHtml += '<li>\n' +
+                                    '\t\t\t\t<div class="invite-user-inner">\n' +
+                                    '\t\t\t\t\t\t\t\t<div class="invite-user-icon">\n' +
+                                    '\t\t\t\t\t\t\t\t\t\t\t\t<img src="' + (userDetails.userImage ? IMAGE_USER_PATH_LINK + userDetails.userImage : 'images/no-profile-image.jpg') + '" alt="">\n' +
+                                    '\t\t\t\t\t\t\t\t</div>\n' +
+                                    '\t\t\t\t\t\t\t\t<div class="invite-user-name">\n' +
+                                    '\t\t\t\t\t\t\t\t\t\t\t\t<h3>'+userDetails.itemName+'</h3>\n' +
+                                    '\t\t\t\t\t\t\t\t\t\t\t\t<span>'+userDetails.role+'</span>\n' +
+                                    '\t\t\t\t\t\t\t\t</div>\n' +
+                                    '\t\t\t\t</div>\n' +
+                                    '</li>';
+                            }
+                        });
+                        iHtml += '</ul>';
+                        document.getElementById('userTabContent').innerHTML = iHtml;
+                    } else {
+                        let html = '<ul>' +
+                            '<li><p>No user selected</p></li>' +
+                            '</ul>';
+                        document.getElementById('userTabContent').innerHTML = html;
+                    }
+                    if (getClauseDetails.assignedTeam && getClauseDetails.assignedTeam.length > 0) {
+                        let iHtml = '<ul>';
+                        getClauseDetails.assignedTeam.forEach((ele) => {
+                            let teamDetails = inviteTeamListIDs.find((el) => el._id == ele._id);
+                            if (teamDetails && teamDetails.itemName) {
+                                iHtml +='<li>\n' +
+                                    '\t\t\t\t<div class="invite-user-inner">\n' +
+                                    '\t\t\t\t\t\t\t\t<div class="invite-user-name">\n' +
+                                    '\t\t\t\t\t\t\t\t\t\t\t\t<h3>'+teamDetails.itemName+'</h3>\n' +
+                                    '\t\t\t\t\t\t\t\t</div>\n' +
+                                    '\t\t\t\t</div>\n' +
+                                    '</li>';
+                            }
+                        });
+                        iHtml += '</ul>';
+                        document.getElementById('teamTabContent').innerHTML = iHtml;
+                    } else {
+                        let html = '<ul>' +
+                            '<li><p>No team selected</p></li>' +
+                            '</ul>';
+                        document.getElementById('teamTabContent').innerHTML = html;
+                    }
+                }
             }
         });
 
@@ -900,6 +956,7 @@
                         if (documentMode != 'markup') {
                             getContractTeamAndUserList();
                         }
+                        clauseLists = [];
                         getContractSectionList();
                         setupSocket();
                     } else if ((responseData.data.openContractDetails && responseData.data.openContractDetails.counterPartyInviteStatus && responseData.data.openContractDetails.counterPartyInviteStatus == 'Pending') || responseData.data.counterPartyInviteStatus == 'Pending') {
@@ -1058,6 +1115,7 @@
                         var html = '';
                         var html1 = '';
                         result.forEach((ele) => {
+                            clauseLists.push(ele);
                             let commentID = ele.commentId;
                             html += '<div class="contract-item" data-id="' + ele._id + '" data-commentid="' + commentID + '" id="' + commentID.split('-').pop() + '">\n' +
                                 '\t\t\t<a href="#">\n' +
