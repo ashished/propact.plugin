@@ -526,20 +526,7 @@
     /**================================== Plugin Init End =================================*/
 
 
-    window.Asc.plugin.button = function(id, windowId) {
-        /*if (!modalWindow)
-            return;*/
 
-        if (windowId == 'iframe_asc.{BE5CBF95-C0AD-4842-B157-AC40FEDD9841}') {
-            switch (id) {
-                case -1:
-                    window.Asc.plugin.executeMethod('CloseWindow', [windowId]);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     /**=========================== Plugin onMethodReturn Start ============================*/
     window.Asc.plugin.onMethodReturn = function (returnValue) {
