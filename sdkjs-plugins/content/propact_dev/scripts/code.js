@@ -533,8 +533,10 @@
         if (windowId) {
             switch (id) {
                 case -1:
-                default:
                     window.Asc.plugin.executeMethod('CloseWindow', [windowId]);
+                    break;
+                default:
+                    break;
             }
         }
     };
