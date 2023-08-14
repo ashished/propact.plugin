@@ -527,8 +527,8 @@
 
 
     window.Asc.plugin.button = function(id, windowId) {
-        if (!modalWindow)
-            return;
+        /*if (!modalWindow)
+            return;*/
 
         if (windowId) {
             switch (id) {
