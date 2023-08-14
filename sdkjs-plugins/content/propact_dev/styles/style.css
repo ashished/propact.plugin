@@ -172,7 +172,7 @@ img {max-width: 100%;vertical-align: middle;border-style: none; height: auto;}
 .invite-user-tabs .invite-user-tabs-header .nav-tabs { width: auto; justify-content: center; align-items: center; margin: 0 auto 20px; background: #69DAEE; border: 0; border-radius: 4px; padding: 4px; float: none; max-width: 216px;}
 .invite-user-tabs .invite-user-tabs-header .nav-tabs .nav-item { margin: 0; padding: 0; float: none; display: inline-block;}
 .invite-user-tabs-header .nav-tabs .nav-item .nav-link { font-size: 14px; font-weight: 600; color: #282756; border: 0; border-radius: 4px; padding: 0; line-height: 32px; min-width: 102px; text-align: center; margin: 0; display: inline-block;}
-.invite-user-tabs-header .nav-tabs .nav-item .nav-link:hover,.invite-user-tabs-header .nav-tabs .nav-item .nav-link.active { background: #fff; opacity: 100%;}
+/*.invite-user-tabs-header .nav-tabs .nav-item .nav-link:hover,.invite-user-tabs-header .nav-tabs .nav-item .nav-link.active { background: #fff; opacity: 100%;}*/
 .conversation-right > ul li .invite-user-tabs .invite-user-tabs-body { float: left; margin: 0; padding: 0; width: 100%;}
 .invite-user-tabs .invite-user-tabs-body .tab-content { width: 100%; margin: 0; padding: 0; display: block;}
 .invite-user-tabs-body .tab-content .invite-user-list { width: 100%; margin: 0; padding: 0; float: left }
