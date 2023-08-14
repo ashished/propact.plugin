@@ -519,7 +519,6 @@
                 EditorsSupport : ['word', 'cell', 'slide'],
                 size : [550, 300]
             };
-            document.getElementById('modalContent').innerHTML = selectedCommentThereadID + " === " + selectedThreadID;
             window.Asc.plugin.executeMethod ("ShowWindow", ["iframe_asc.{BE5CBF95-C0AD-4842-B157-AC40FEDD9841}", variation]);
         });
 
