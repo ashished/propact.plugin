@@ -1723,7 +1723,7 @@
     }
 
     /**================================ API Function End ==================================*/
-
+    window.Asc.plugin.executeMethod ("ShowButton", ["back", false]);
     window.Asc.plugin.button = function(id, windowId) {
         if (windowId == 'iframe_asc.{BE5CBF95-C0AD-4842-B157-AC40FEDD9841}') {
             switch (id) {
