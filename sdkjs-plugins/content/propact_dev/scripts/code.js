@@ -530,7 +530,7 @@
         /*if (!modalWindow)
             return;*/
 
-        if (windowId) {
+        if (windowId == 'iframe_asc.{BE5CBF95-C0AD-4842-B157-AC40FEDD9841}') {
             switch (id) {
                 case -1:
                     window.Asc.plugin.executeMethod('CloseWindow', [windowId]);
