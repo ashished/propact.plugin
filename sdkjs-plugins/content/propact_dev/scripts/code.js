@@ -65,6 +65,7 @@
     window.Asc.plugin.init = function (text) {
 
         //event "init" for plugin
+        window.Asc.plugin.executeMethod ("ShowButton", ["back", false]);
         window.Asc.plugin.executeMethod("GetAllContentControls");
         fBtnGetAll = true;
 
@@ -1723,7 +1724,6 @@
     }
 
     /**================================ API Function End ==================================*/
-    window.Asc.plugin.executeMethod ("ShowButton", ["back", false]);
     window.Asc.plugin.button = function(id, windowId) {
         if (windowId == 'iframe_asc.{BE5CBF95-C0AD-4842-B157-AC40FEDD9841}') {
             switch (id) {
