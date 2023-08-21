@@ -3862,14 +3862,14 @@
                         selectedContractSectionDetails = responseData.data;
                         document.getElementById('sameSideTypeBox').classList.remove(displayNoneClass);
                         document.getElementById('counterpartyTypeBox').classList.remove(displayNoneClass);
-                        let actionSameSide = document.querySelectorAll('.action-sameside');
-                        actionSameSide.forEach(function (element) {
-                            element.classList.remove(displayNoneClass);
-                        });
-                        let actionCounterparty = document.querySelectorAll('.action-counterparty');
-                        actionCounterparty.forEach(function (element) {
-                            element.classList.remove(displayNoneClass);
-                        });
+                        // let actionSameSide = document.querySelectorAll('.action-sameside');
+                        // actionSameSide.forEach(function (element) {
+                        //     element.classList.remove(displayNoneClass);
+                        // });
+                        // let actionCounterparty = document.querySelectorAll('.action-counterparty');
+                        // actionCounterparty.forEach(function (element) {
+                        //     element.classList.remove(displayNoneClass);
+                        // });
                         var draftConfirmCPElement = document.getElementById("draftConfirmCP");
                         if (draftConfirmCPElement) {
                             draftConfirmCPElement.parentNode.removeChild(draftConfirmCPElement);
