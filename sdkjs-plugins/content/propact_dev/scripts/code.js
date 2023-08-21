@@ -576,7 +576,7 @@
             if (varToggleInviteUserTeam.closest("li").classList.contains('active')) {
                 varToggleInviteUserTeam.closest("li").classList.remove('active');
             } else {
-                await getSelectedContractSectionDetails();
+                getSelectedContractSectionDetails();
                 varToggleInviteUserTeam.closest("li").classList.add('active');
             }
         });
