@@ -2142,6 +2142,10 @@
                             window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
                         }
                     }
+                    if (responseData.data.openContractDetails && responseData.data.openContractDetails.userWhoHasEditAccess && responseData.data.openContractDetails.userWhoHasEditAccess == loggedInUserDetails._id && responseData.data.contractCurrentState == 'Edit') {
+                        var sDocumentEditingRestrictions = "none";
+                        window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
+                    }
                     flagInit = true;
                     openContractUserDetails = responseData.data;
                     document.title = "ProPact | " + openContractUserDetails.loggedInUserDetails.firstName + " " + openContractUserDetails.loggedInUserDetails.lastName + " " + openContractUserDetails.loggedInUserDetails.role;
