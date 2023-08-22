@@ -1665,29 +1665,33 @@
                             '</div>';
                     }
                 } else if (data.messageType == "Notification" && data.confirmationType == "draft") {
-                    html += '<div class="message-wrapper red-color">\n' +
-                        '       <div class="profile-picture">\n' +
-                        '           <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                        '           <p class="name">' + data.actionperformedbyUser + '&nbsp;<small>(' + (data && data.actionperformedbyUserRole == 'Counterparty' ? 'Counterparty' : 'Same side') + ')</small>' + '</p>\n' +
-                        '           <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
-                        '       </div>\n' +
-                        '       <div class="request-row">\n' +
-                        '           <div class="message-content">\n' +
-                        '               <h4>Draft confirmation rejected</h4>\n' +
-                        '               <div class="message">' + data.message + '</div>\n' +
-                        '           </div>\n' +
-                        '       </div>\n' +
-                        '</div>';
-                    html += '<div class="message-wrapper grey-color ' + (data.with == "Counterparty" ? "light-gold-color" : "") + '">\n' +
-                        '       <div class="profile-picture">\n' +
-                        '           <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
-                        '           <p class="name">' + data.actionperformedbyUser + '&nbsp;<small>(' + (data && data.actionperformedbyUserRole == 'Counterparty' ? 'Counterparty' : 'Same side') + ')</small>' + '</p>\n' +
-                        '           <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
-                        '       </div>\n' +
-                        '       <div class="request-row">\n' +
-                        '           <strong>Draft confirmation request rejected by ' + data.actionperformedbyUser + '</strong>\n' +
-                        '       </div>\n' +
-                        '</div>';
+                    if (data.status == 'approved') {
+                        getSelectedContractSectionDetails();
+                    } else {
+                        html += '<div class="message-wrapper red-color">\n' +
+                            '       <div class="profile-picture">\n' +
+                            '           <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                            '           <p class="name">' + data.actionperformedbyUser + '&nbsp;<small>(' + (data && data.actionperformedbyUserRole == 'Counterparty' ? 'Counterparty' : 'Same side') + ')</small>' + '</p>\n' +
+                            '           <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                            '       </div>\n' +
+                            '       <div class="request-row">\n' +
+                            '           <div class="message-content">\n' +
+                            '               <h4>Draft confirmation rejected</h4>\n' +
+                            '               <div class="message">' + data.message + '</div>\n' +
+                            '           </div>\n' +
+                            '       </div>\n' +
+                            '</div>';
+                        html += '<div class="message-wrapper grey-color ' + (data.with == "Counterparty" ? "light-gold-color" : "") + '">\n' +
+                            '       <div class="profile-picture">\n' +
+                            '           <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                            '           <p class="name">' + data.actionperformedbyUser + '&nbsp;<small>(' + (data && data.actionperformedbyUserRole == 'Counterparty' ? 'Counterparty' : 'Same side') + ')</small>' + '</p>\n' +
+                            '           <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                            '       </div>\n' +
+                            '       <div class="request-row">\n' +
+                            '           <strong>Draft confirmation request rejected by ' + data.actionperformedbyUser + '</strong>\n' +
+                            '       </div>\n' +
+                            '</div>';
+                    }
                 } else if (data.messageType == "Notification" && data.confirmationType == "request_draft") {
                     if (data.sendTo) {
                         html += '<div class="message-wrapper grey-color ' + (data.with == "Counterparty" ? "light-gold-color" : "") + '">\n' +
@@ -3918,7 +3922,7 @@
 
                             htmlA = '<div class="chat-typing-area" id="draftConfirmSS">\n' +
                                 '   <div class="position-text">' + selectedContractSectionDetailsA.contractSectionData.draftConfirmMessage + " " + selectedContractSectionDetailsA.contractSectionData.confirmByCounterPartyId.firstName + " " + selectedContractSectionDetailsA.contractSectionData.confirmByCounterPartyId.lastName + " and " + selectedContractSectionDetailsA.contractSectionData.confirmByUserId.firstName + " " + selectedContractSectionDetailsA.contractSectionData.confirmByUserId.lastName + '</div>\n' +
-                                '   <div class="btn-box btn-box-re-open"><button class="btn-primary">Re-Open</button></div>\n' +
+                                '   <div class="btn-box btn-box-re-open"><button class="btn-primary btn">Re-Open</button></div>\n' +
                                 '</div>';
                             var contentDiv = document.getElementById("chatContractSameSideFooter");
                             var newElement = document.createElement("div");
@@ -4300,7 +4304,7 @@
 
                                 htmlA = '<div class="chat-typing-area" id="draftConfirmSS">\n' +
                                     '   <div class="position-text">Drafting has been confirmed by John Mark and Ketan Barad</div>\n' +
-                                    '   <div class="btn-box btn-box-re-open"><button class="btn-primary">Re-Open</button></div>\n' +
+                                    '   <div class="btn-box btn-box-re-open"><button class="btn btn-primary">Re-Open</button></div>\n' +
                                     '</div>';
                                 /*var contentDiv = document.getElementById("chatContractSameSideFooter");
                                 var newElement = document.createElement("div");
