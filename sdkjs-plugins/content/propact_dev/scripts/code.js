@@ -2660,7 +2660,7 @@
                         nContentControlProperties = {
                             "Id": randomNumber,
                             "Tag": commentID,
-                            "Lock": 1,
+                            "Lock": 2,
                             "Color": color,
                             "InternalId": randomNumber.toString()
                         };
