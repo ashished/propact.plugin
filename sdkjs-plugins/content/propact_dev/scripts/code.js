@@ -106,7 +106,16 @@
             getOpenContractUserDetails();
         }
 
-        if (!flagInit) {
+        const varBtnCreateClause = document.getElementById('btnCreateClause');
+        varBtnCreateClause.addEventListener('click', function () {
+            if (text) {
+                document.getElementById('divContractLists').classList.add(displayNoneClass);
+                document.getElementById('divContractCreate').classList.remove(displayNoneClass);
+                toggleInviteUsersDivShow = true;
+            }
+        });
+
+        if (!flagJSLoad) {
             // Invite counterparty screen
             const varBtnRedirectInviteCounterpartyForm = document.getElementById('btnRedirectInviteCounterpartyForm');
             varBtnRedirectInviteCounterpartyForm.addEventListener('click', function () {
@@ -136,15 +145,6 @@
             // Invite counterparty Pending screen
 
             // Contract clause lists screen
-            const varBtnCreateClause = document.getElementById('btnCreateClause');
-            varBtnCreateClause.addEventListener('click', function () {
-                if (text) {
-                    document.getElementById('divContractLists').classList.add(displayNoneClass);
-                    document.getElementById('divContractCreate').classList.remove(displayNoneClass);
-                    toggleInviteUsersDivShow = true;
-                }
-            });
-
             const varBtnMarkupMode = document.getElementById('btnMarkupMode');
             varBtnMarkupMode.addEventListener('click', function () {
                 let data = {
@@ -1153,7 +1153,7 @@
                 $(this).parent().addClass('d-none');
             });
 
-            flagInit = true;
+            flagJSLoad = true;
         }
 
     };
