@@ -500,6 +500,15 @@
                     document.getElementById('sendPositionConfirmationPopup').classList.add(displayNoneClass);
                     document.getElementById('toggleInviteUserTeam').closest("li").classList.remove('active');
                     window.Asc.plugin.executeMethod("SelectContentControl", [tagLists[tagExists].InternalId]);
+
+                    // let actionSameSide = document.querySelectorAll('.action-sameside');
+                    // actionSameSide.forEach(function (element) {
+                    //     element.classList.remove(displayNoneClass);
+                    // });
+                    // let actionCounterparty = document.querySelectorAll('.action-counterparty');
+                    // actionCounterparty.forEach(function (element) {
+                    //     element.classList.remove(displayNoneClass);
+                    // });
                     let getClauseDetails = clauseLists.find((ele) => ele._id == selectedThreadID);
                     if (getClauseDetails && getClauseDetails._id) {
                         await getSelectedContractSectionDetails();
@@ -3869,14 +3878,14 @@
                         selectedContractSectionDetails = responseData.data;
                         document.getElementById('sameSideTypeBox').classList.remove(displayNoneClass);
                         document.getElementById('counterpartyTypeBox').classList.remove(displayNoneClass);
-                        // let actionSameSide = document.querySelectorAll('.action-sameside');
-                        // actionSameSide.forEach(function (element) {
-                        //     element.classList.remove(displayNoneClass);
-                        // });
-                        // let actionCounterparty = document.querySelectorAll('.action-counterparty');
-                        // actionCounterparty.forEach(function (element) {
-                        //     element.classList.remove(displayNoneClass);
-                        // });
+                        let actionSameSide = document.querySelectorAll('.action-sameside');
+                        actionSameSide.forEach(function (element) {
+                            element.classList.remove(displayNoneClass);
+                        });
+                        let actionCounterparty = document.querySelectorAll('.action-counterparty');
+                        actionCounterparty.forEach(function (element) {
+                            element.classList.remove(displayNoneClass);
+                        });
                         var draftConfirmCPElement = document.getElementById("draftConfirmCP");
                         if (draftConfirmCPElement) {
                             draftConfirmCPElement.parentNode.removeChild(draftConfirmCPElement);
