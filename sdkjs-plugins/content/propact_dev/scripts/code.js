@@ -1197,13 +1197,13 @@
 
     /**================ Plugin event_onTargetPositionChanged Start ========================*/
     window.Asc.plugin.event_onTargetPositionChanged = function () {
-        //event change cursor position
-        //all events are specified in the config file in the "events" field
-        // if (!fClickLabel) {
-        //     //menthod for get current content control (where is the cursor located)
-        //     window.Asc.plugin.executeMethod("GetCurrentContentControl");
-        // }
-        // fClickLabel = false;
+        event change cursor position
+        all events are specified in the config file in the "events" field
+        if (!fClickLabel) {
+            //method for get current content control (where is the cursor located)
+            window.Asc.plugin.executeMethod("GetCurrentContentControl");
+        }
+        fClickLabel = false;
     };
     /**================== Plugin event_onTargetPositionChanged End ========================*/
 
