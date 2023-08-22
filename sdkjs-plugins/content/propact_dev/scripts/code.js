@@ -2464,8 +2464,8 @@
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<h3>Created by</h3>\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="contract-user">\n';
 
-                            html += '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<img src="' + (ele && ele.createdByUserDetails && ele.createdByUserDetails.imageUrl ? ele.createdByUserDetails.imageUrl : 'images/no-profile-image.jpg') + '" alt="">\n' +
-                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span>' + (ele && ele.createdByUserDetails ? ele.createdByUserDetails.firstName + ' ' + ele.createdByUserDetails.lastName : '') + '</span>\n';
+                            html += '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="approved-user-lists"><img src="' + (ele && ele.createdByUserDetails && ele.createdByUserDetails.imageUrl ? ele.createdByUserDetails.imageUrl : 'images/no-profile-image.jpg') + '" alt="">\n' +
+                                '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span>' + (ele && ele.createdByUserDetails ? ele.createdByUserDetails.firstName + ' ' + ele.createdByUserDetails.lastName : '') + '</span></div>\n';
 
                             html += '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
                                 '\t\t\t\t\t\t\t\t\t\t\t\t</div>\n' +
@@ -2475,8 +2475,8 @@
 
                             if (ele && ele.approvedByUserDetails && ele.approvedByUserDetails.length > 0) {
                                 ele.approvedByUserDetails.forEach((element) => {
-                                    html += '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<img src="' + (element && element.userInfo && ele.userInfo?.imageUrl ? ele.userInfo?.imageUrl : 'images/no-profile-image.jpg') + '" alt="">\n' +
-                                        '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span>' + (element && element.userInfo ? element.userInfo.firstName + ' ' + element.userInfo.lastName : '') + '</span>\n';
+                                    html += '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class="approved-user-lists"><img src="' + (element && element.userInfo && ele.userInfo?.imageUrl ? ele.userInfo?.imageUrl : 'images/no-profile-image.jpg') + '" alt="">\n' +
+                                        '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span>' + (element && element.userInfo ? element.userInfo.firstName + ' ' + element.userInfo.lastName : '') + '</span></div>\n';
                                 });
                             } else {
                                 html += '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span>&mdash;</span>\n';
