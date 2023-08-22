@@ -43,7 +43,7 @@ if (document.currentScript && document.currentScript.src) {
         link.rel = "stylesheet";
         link.type = "text/css";
         link.href = scriptDirectory + "/plugins.css";
-        document.getElementsByTagName('HEAD')[0].appendChild(link);  
+        // document.getElementsByTagName('HEAD')[0].appendChild(link);
 	}
 }
 // escape and unescape func
