@@ -2142,7 +2142,7 @@
                             window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
                         }
                     }
-                    if (responseData.data.openContractDetails && responseData.data.openContractDetails.userWhoHasEditAccess && responseData.data.openContractDetails.userWhoHasEditAccess == loggedInUserDetails._id && responseData.data.contractCurrentState == 'Edit') {
+                    if (responseData.data.openContractDetails && responseData.data.openContractDetails.userWhoHasEditAccess && responseData.data.openContractDetails.userWhoHasEditAccess == responseData.data.loggedInUserDetails._id && responseData.data.contractCurrentState == 'Edit') {
                         var sDocumentEditingRestrictions = "none";
                         window.Asc.plugin.executeMethod("SetEditingRestrictions", [sDocumentEditingRestrictions]);
                     }
