@@ -1933,6 +1933,7 @@
                                 '           <strong>Draft contract request approved by ' + data.actionperformedbyUser + '</strong>\n' +
                                 '       </div>\n' +
                                 '</div>';
+                            getOpenContractUserDetails(socket, redirection = false);
                         }
                     } else if (data.messageType == "Draft Confirmation") {
                         htmlHistory += '<div class="message-wrapper dark-gold-color">\n' +
@@ -4236,6 +4237,7 @@
                                     '      <strong>Draft contract request approved by ' + postData.actionperformedbyUser + '</strong>\n' +
                                     '   </div>\n' +
                                     '</div>\n';
+                                getOpenContractUserDetails(socket, redirection = false);
                             } else {
                                 html += '<div class="message-wrapper reverse  red-color">\n' +
                                     '   <div class="profile-picture">\n' +
