@@ -4322,22 +4322,7 @@
                                     element.classList.add(displayNoneClass);
                                 });
                                 getSelectedContractSectionDetails();
-                                html = '<div class="chat-typing-area" id="draftConfirmCP">\n' +
-                                    '   <div class="position-text">Drafting has been confirmed by John Mark and Ketan Barad</div>\n' +
-                                    '</div>';
-                                /*var contentDiv = document.getElementById("chatContractCounterpartyFooter");
-                                var newElement = document.createElement("div");
-                                newElement.innerHTML = html;
-                                contentDiv.appendChild(newElement);*/
-
-                                htmlA = '<div class="chat-typing-area" id="draftConfirmSS">\n' +
-                                    '   <div class="position-text">Drafting has been confirmed by John Mark and Ketan Barad</div>\n' +
-                                    '   <div class="btn-box btn-box-re-open"><button class="btn btn-primary">Re-Open</button></div>\n' +
-                                    '</div>';
-                                /*var contentDiv = document.getElementById("chatContractSameSideFooter");
-                                var newElement = document.createElement("div");
-                                newElement.innerHTML = htmlA;
-                                contentDiv.appendChild(newElement);*/
+                                getOpenContractUserDetails(socket, redirection = false);
                             } else {
                                 html += '<div class="message-wrapper reverse red-color">\n' +
                                     '   <div class="profile-picture">\n' +
