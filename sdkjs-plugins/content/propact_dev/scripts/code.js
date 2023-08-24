@@ -941,7 +941,7 @@
                         "messageNumber": 0,
                         "chatWindow": withType
                     };
-                    if ($('#assignDraftRequestUserIdB').val()) {
+                    if ($('#assignDraftRequestUserIdB').val() && document.getElementById('sendToTeamForDraft').checked) {
                         approveConfirmation.with = 'Our Team';
                         approveConfirmation.messageConfirmationFor = 'Same Side';
                         approveConfirmation.sendTo = $('#assignDraftRequestUserIdB').val();
@@ -1551,7 +1551,23 @@
                     html += '    </div>\n' +
                         '</div>\n';
                 } else if (data.messageType == 'Draft Confirmation') {
-
+                    html += '<div class="message-wrapper' + (data.with == "Counterparty" ? " dark-gold-color" : "") + '">\n' +
+                        '   <div class="profile-picture">\n' +
+                        '           <img src="' + (data.actionperformedbyUserImage ? data.actionperformedbyUserImage : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
+                        '           <p class="name">' + data.actionperformedbyUser + '</p>\n' +
+                        '           <p class="last-seen">' + formatDate(new Date()) + '</p>\n' +
+                        '   </div>\n' +
+                        '   <div class="request-row">\n' +
+                        '      <div class="message-content">\n' +
+                        '         <h4>Draft confirmation request</h4>\n' +
+                        '         <div class="message">' + data.message.replaceAll(/\n/g, '<br>') + '</div>\n' +
+                        '      </div>\n' +
+                        '      <div class="request-btn">\n' +
+                        '         <button class="btn btn-primary draft-approve" data-action="Approve" data-id="' + data._id + '">Approve</button>\n' +
+                        '         <button class="btn reject-btn  draft-reject " data-action="Reject" data-id="' + data._id + '">Reject</button>\n' +
+                        '      </div>\n' +
+                        '   </div>\n' +
+                        '</div>';
                 } else if (data.messageType == 'Notification') {
                     if (data.confirmationType == 'position') {
                         if (data.status == 'rejected') {
@@ -2520,7 +2536,7 @@
                         });
                         document.getElementById('contractListItemsDiv').innerHTML += html;
                     } else {
-                        let norecordhtml = '<p class="nodata-info">No clause available</p>';
+                        let norecordhtml = '<p class="nodata-info">No clauses available</p>';
                         document.getElementById('contractListItemsDiv').innerHTML = norecordhtml;
                     }
                 }
