@@ -3448,16 +3448,16 @@
                                         html += '       </div>\n' +
                                             '</div>\n';
                                     } else if (chatMessage.messageType == 'Draft Confirmation') {
-                                        html += '<div class="message-wrapper reverse ' + (messageType == "Counterparty" && chatMessage.messageStatus != 'Reject' ? "dark-gold-color" : "") + ' ' + (chatMessage.messageStatus == 'Reject' ? "red-color" : "") + '">\n' +
+                                        html += '<div class="message-wrapper reverse ' + (chatMessage.with == "Counterparty" && chatMessage.messageStatus != 'Reject' ? "dark-gold-color" : "") + ' ' + (chatMessage.messageStatus == 'Reject' ? "red-color" : "") + '">\n' +
                                             '       <div class="profile-picture">\n' +
                                             '           <p class="last-seen">' + formatDate(chatMessage.createdAt) + '</p>\n' +
                                             '           <p class="name">' + chatMessage.messageSenderUser.firstName + ' ' + chatMessage.messageSenderUser.lastName + '&nbsp;<small>(' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.role == 'Counterparty' ? 'Counterparty' : 'Same side') + ')</small>' + '</p>\n' +
                                             '           <img src="' + (chatMessage && chatMessage.messageSenderUser && chatMessage.messageSenderUser.imageUrl ? chatMessage.messageSenderUser.imageUrl : 'images/no-profile-image.jpg') + '" alt="pp">\n' +
                                             '       </div>\n' +
                                             '       <div class="request-row">\n' +
-                                            '           <div class="' + (messageType == "Counterparty" ? "message-content" : "request-content") + '">\n' +
+                                            '           <div class="' + (chatMessage.with == "Counterparty" ? "message-content" : "request-content") + '">\n' +
                                             '               <h4>' + (chatMessage.messageStatus == 'None' || chatMessage.messageStatus == 'Updated' ? 'Draft confirmation request' : (chatMessage.messageStatus == 'Approve' ? 'Draft confirmation approved' : 'Draft confirmation rejected')) + '</h4>\n' +
-                                            '               <div class="' + (messageType == "Counterparty" ? "message" : "content-message") + '">' + chatMessage.message.replaceAll(/\n/g, '<br>') + '</div>\n' +
+                                            '               <div class="' + (chatMessage.with == "Counterparty" ? "message" : "content-message") + '">' + chatMessage.message.replaceAll(/\n/g, '<br>') + '</div>\n' +
                                             '           </div>\n';
                                         if (chatMessage.from != loggedInUserDetails._id && chatMessage.companyId != loggedInUserDetails.company._id && chatMessage.messageStatus == 'None' && openContractUserDetails.canConfirmPosition && (loggedInUserDetails.role == 'Contract Creator' || loggedInUserDetails.role == 'Counterparty')) {
                                             html += '        <div class="request-btn">\n' +
