@@ -38,7 +38,7 @@
     var selectedInvitedTeams = [];
     var inviteUserSelect = [];
     var inviteTeamSelect = [];
-    var baseUrl = 'https://propact.digitaldilemma.com.au:3000';
+    var baseUrl = 'http://192.168.1.40:3000';
     var apiBaseUrl = baseUrl + '/api/v1/app';
     var IMAGE_USER_PATH_LINK = 'https://propact.s3.amazonaws.com/';
     var clauseRecordLimit = 10;
@@ -946,7 +946,7 @@
                         approveConfirmation.messageConfirmationFor = 'Same Side';
                         approveConfirmation.sendTo = $('#assignDraftRequestUserIdB').val();
                         approveConfirmation.sendToName = document.getElementById('assignDraftRequestInputB').placeholder;
-                        approveConfirmation.chatRoomName = getChatRoom('Our Team')
+                        approveConfirmation.chatRoomName = 'user_' + counterPartyCustomerDetail.company._id + selectedCommentThereadID
                     }
                     updateContractSectionConfirmationStatus(approveConfirmation, socket, 'frmReconfirmPosition');
                     $('.reconfirm-approve[data-id="' + approveConfirmation.messageId + '"]').parent().addClass(displayNoneClass);
